@@ -12,7 +12,7 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     @POST("auth/register")
-    Call<Void> registerUser(@Body User user);
+    Call<RegisterResponse> registerUser(@Body RegisterRequest registerRequest);
 
     @POST("auth/login")
     Call<LoginResponse> loginUser(@Body LoginRequest loginRequest);

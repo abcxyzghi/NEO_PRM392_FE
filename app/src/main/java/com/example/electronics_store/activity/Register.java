@@ -1,5 +1,8 @@
 package com.example.electronics_store.activity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -7,13 +10,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.content.Context;
+
 import com.example.electronics_store.R;
 import com.example.electronics_store.retrofit.ApiService;
+import com.example.electronics_store.retrofit.RegisterRequest;
+import com.example.electronics_store.retrofit.RegisterResponse;
 import com.example.electronics_store.retrofit.RetrofitClient;
-import com.example.electronics_store.retrofit.User;
 
 import java.io.IOException;
 
@@ -41,78 +43,73 @@ public class Register extends AppCompatActivity {
         Button btnOther = findViewById(R.id.btnOther);
 
         btnMale.setOnClickListener(v -> {
-            selectedGender = "Male";
+            selectedGender = "MALE";
             updateGenderButtonStyles(btnMale, btnFemale, btnOther);
         });
 
         btnFemale.setOnClickListener(v -> {
-            selectedGender = "Female";
+            selectedGender = "FEMALE";
             updateGenderButtonStyles(btnFemale, btnMale, btnOther);
         });
 
         btnOther.setOnClickListener(v -> {
-            selectedGender = "Other";
+            selectedGender = "OTHER";
             updateGenderButtonStyles(btnOther, btnMale, btnFemale);
         });
 
-        registerBtn.setOnClickListener(v -> {
-            final String nameText = yourName.getText().toString();
-            final String emailText = emailAddress.getText().toString();
-            final String phoneText = phone.getText().toString();
-            final String passwordText = password.getText().toString();
-            final String confirmPasswordText = confirmPassword.getText().toString();
+        registerBtn.setOnClickListener(v -> registerUser(yourName, emailAddress, phone, password, confirmPassword));
+    }
 
-            if (nameText.isEmpty() || emailText.isEmpty() || phoneText.isEmpty()
-                    || passwordText.isEmpty() || confirmPasswordText.isEmpty()
-                    || selectedGender.isEmpty()) {
-                Toast.makeText(Register.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
-                return;
-            }
+    private void registerUser(EditText yourName, EditText emailAddress, EditText phone, EditText password, EditText confirmPassword) {
+        final String nameText = yourName.getText().toString().trim();
+        final String emailText = emailAddress.getText().toString().trim();
+        final String phoneText = phone.getText().toString().trim();
+        final String passwordText = password.getText().toString().trim();
+        final String confirmPasswordText = confirmPassword.getText().toString().trim();
 
-            if (!passwordText.equals(confirmPasswordText)) {
-                Toast.makeText(Register.this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        if (nameText.isEmpty() || emailText.isEmpty() || phoneText.isEmpty()
+                || passwordText.isEmpty() || confirmPasswordText.isEmpty()
+                || selectedGender.isEmpty()) {
+            showToast("Vui lòng điền đầy đủ thông tin");
+            return;
+        }
 
-            User user = new User(nameText, emailText, phoneText, selectedGender, passwordText, "user");
+        if (!passwordText.equals(confirmPasswordText)) {
+            showToast("Mật khẩu không khớp");
+            return;
+        }
 
-            if (!isNetworkAvailable()) {
-                Toast.makeText(Register.this, "Không có kết nối mạng. Vui lòng kiểm tra lại.", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        RegisterRequest registerRequest = new RegisterRequest(nameText, emailText, passwordText, phoneText, selectedGender);
 
-            ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-            Call<Void> call = apiService.registerUser(user);
+        if (!isNetworkAvailable()) {
+            showToast("Không có kết nối mạng. Vui lòng kiểm tra lại.");
+            return;
+        }
 
-            call.enqueue(new Callback<>() {
-                @Override
-                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(Register.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<RegisterResponse> call = apiService.registerUser(registerRequest);
+
+        call.enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<RegisterResponse> call, @NonNull Response<RegisterResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    RegisterResponse registerResponse = response.body();
+                    if (registerResponse.isSuccess()) {
+                        showToast("Đăng ký thành công: " + registerResponse.getMessage());
                     } else {
-                        String errorMessage = response.message();
-                        if (response.code() == 400) {
-                            errorMessage = "Email đã tồn tại hoặc thông tin không hợp lệ";
-                        } else if (response.code() == 500) {
-                            errorMessage = "Lỗi máy chủ. Vui lòng thử lại sau";
-                        }
-                        Toast.makeText(Register.this, "Lỗi: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        showToast("Lỗi: " + registerResponse.getMessage());
                     }
+                } else {
+                    showToast("Đăng ký thất bại: " + response.message());
                 }
+            }
 
-                @Override
-                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                    String errorMessage = "Lỗi kết nối: ";
-                    if (t instanceof IOException) {
-                        errorMessage += "Không thể kết nối đến máy chủ";
-                    } else {
-                        errorMessage += t.getMessage();
-                    }
-                    Toast.makeText(Register.this, errorMessage, Toast.LENGTH_SHORT).show();
-
-                    RetrofitClient.resetClient();
-                }
-            });
+            @Override
+            public void onFailure(@NonNull Call<RegisterResponse> call, @NonNull Throwable t) {
+                String errorMessage = "Lỗi kết nối: " + (t instanceof IOException ? "Không thể kết nối đến máy chủ" : t.getMessage());
+                showToast(errorMessage);
+                RetrofitClient.resetClient();
+            }
         });
     }
 
@@ -121,15 +118,18 @@ public class Register extends AppCompatActivity {
         selectedButton.setTextColor(getColor(R.color.white));
 
         for (Button btn : otherButtons) {
-            btn.setBackgroundTintList(null);
+            btn.setBackgroundTintList(getColorStateList(R.color.white));
             btn.setTextColor(getColor(R.color.green));
         }
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    private void showToast(String message) {
+        Toast.makeText(Register.this, message, Toast.LENGTH_SHORT).show();
     }
 }
