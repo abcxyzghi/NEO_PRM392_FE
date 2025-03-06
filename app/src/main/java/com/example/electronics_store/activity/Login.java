@@ -131,7 +131,7 @@ public class Login extends AppCompatActivity {
       }
     });
   }
-  // register di dmm
+
 
   private void redirectBasedOnRole(String role) {
     if ("admin".equals(role)) {

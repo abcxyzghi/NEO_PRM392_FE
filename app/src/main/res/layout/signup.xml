@@ -10,7 +10,7 @@
         android:id="@+id/signup_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:text="@string/sign_up"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/create_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:text="@string/create_account"
         android:textColor="@color/black"
         android:textSize="30sp"
@@ -34,7 +34,7 @@
         android:id="@+id/name_textinputlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:hint="@string/your_name"
@@ -55,7 +55,7 @@
         android:id="@+id/email_textinputlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:hint="@string/email"
@@ -76,7 +76,7 @@
         android:id="@+id/phone_textinputlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:hint="@string/your_phone"
@@ -93,11 +93,72 @@
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/tvGenderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="25dp"
+        android:text="Select Gender"
+        android:textColor="@color/green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/phone_textinputlayout"/>
+
+    <HorizontalScrollView
+        android:id="@+id/gender_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/tvGenderLabel">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                android:layout_marginEnd="8dp"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="@color/green"
+                app:strokeColor="@color/green"/>
+
+            <Button
+                android:id="@+id/btnFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female"
+                android:layout_marginEnd="8dp"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="@color/green"
+                app:strokeColor="@color/green"/>
+
+            <Button
+                android:id="@+id/btnOther"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other"
+                android:textSize="16sp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:textColor="@color/green"
+                app:strokeColor="@color/green"/>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_textinputlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:hint="@string/password"
@@ -105,7 +166,7 @@
         app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/phone_textinputlayout">
+        app:layout_constraintTop_toBottomOf="@id/gender_scrollview">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
@@ -119,7 +180,7 @@
         android:id="@+id/reenter_password_textinputlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
         android:hint="@string/confirm_password"
@@ -141,7 +202,7 @@
         android:id="@+id/signup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/continue_background"
         android:paddingStart="50dp"
         android:paddingEnd="50dp"
@@ -157,7 +218,7 @@
         android:id="@+id/signin_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:clickable="true"
         android:focusable="true"
         android:tag="loginNow"

@@ -10,9 +10,9 @@ public class RetrofitClient {
     private static Retrofit retrofit = null;
     private static final AuthInterceptor authInterceptor = new AuthInterceptor(null);
 
-    private static final int DEFAULT_CONNECT_TIMEOUT = 60; // seconds
-    private static final int DEFAULT_READ_TIMEOUT = 60; // seconds
-    private static final int DEFAULT_WRITE_TIMEOUT = 60; // seconds
+    private static final int DEFAULT_CONNECT_TIMEOUT = 60;
+    private static final int DEFAULT_READ_TIMEOUT = 60;
+    private static final int DEFAULT_WRITE_TIMEOUT = 60;
 
     public static Retrofit getClient() {
         return getClient(DEFAULT_CONNECT_TIMEOUT, DEFAULT_READ_TIMEOUT, DEFAULT_WRITE_TIMEOUT);
@@ -25,7 +25,7 @@ public class RetrofitClient {
                     .readTimeout(readTimeout, TimeUnit.SECONDS)
                     .writeTimeout(writeTimeout, TimeUnit.SECONDS)
                     .addInterceptor(authInterceptor)
-                    .retryOnConnectionFailure(true) // Thêm khả năng thử lại kết nối
+                    .retryOnConnectionFailure(true)
                     .build();
 
             retrofit = new Retrofit.Builder()
@@ -37,7 +37,6 @@ public class RetrofitClient {
         return retrofit;
     }
 
-    // Thêm phương thức reset retrofit để tạo lại kết nối nếu cần
     public static void resetClient() {
         retrofit = null;
     }
