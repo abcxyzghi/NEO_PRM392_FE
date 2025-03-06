@@ -1,6 +1,7 @@
 package com.example.electronics_store.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -96,6 +97,9 @@ public class Register extends AppCompatActivity {
                     RegisterResponse registerResponse = response.body();
                     if (registerResponse.isSuccess()) {
                         showToast("Đăng ký thành công: " + registerResponse.getMessage());
+                        Intent intent = new Intent();
+                        startActivity(new Intent(Register.this, Login.class));
+                        finish();
                     } else {
                         showToast("Lỗi: " + registerResponse.getMessage());
                     }
