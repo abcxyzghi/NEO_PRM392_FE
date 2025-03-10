@@ -11,8 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electronics_store.R;
-import com.example.electronics_store.retrofit.UpdateProfileRequest;
-import com.example.electronics_store.retrofit.User;
+import com.example.electronics_store.Model.User;
 
 import java.util.List;
 

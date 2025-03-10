@@ -1,5 +1,8 @@
 package com.example.electronics_store.retrofit;
 
+import com.example.electronics_store.Model.User;
+import com.example.electronics_store.Model.UserDetail;
+
 import java.util.List;
 
 import retrofit2.*;

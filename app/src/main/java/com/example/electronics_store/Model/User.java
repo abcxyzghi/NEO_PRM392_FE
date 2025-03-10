@@ -1,4 +1,4 @@
-package com.example.electronics_store.retrofit;
+package com.example.electronics_store.Model;
 
 public class User {
 
