@@ -13,7 +13,7 @@ import com.example.electronics_store.R;
 import com.example.electronics_store.adapter.UserAdapter;
 import com.example.electronics_store.retrofit.ApiService;
 import com.example.electronics_store.retrofit.RetrofitClient;
-import com.example.electronics_store.retrofit.User;
+import com.example.electronics_store.Model.User;
 
 import java.util.List;
 
