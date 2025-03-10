@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.circleimageview)
 
+    implementation ("com.google.android.gms:play-services-maps:18.1.0")
 
 
 
