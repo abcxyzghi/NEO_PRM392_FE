@@ -34,6 +34,9 @@ android {
 }
 
 dependencies {
+    implementation(libs.converter.gson)
+    implementation(libs.glide)
+    implementation(libs.jwtdecode)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

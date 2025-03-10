@@ -37,6 +37,12 @@ public class RetrofitClient {
         return retrofit;
     }
 
+    public static void setAuthToken(String token) {
+        authInterceptor.setAuthToken(token);
+        resetClient();
+        getClient();
+    }
+
     public static void resetClient() {
         retrofit = null;
     }

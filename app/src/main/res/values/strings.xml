@@ -28,5 +28,6 @@
     <string name="back_to_login">Quay lại đăng nhập</string>
     <string name="verify">Nhập email đăng ký của bạn. Chúng tôi sẽ gửi mã OTP về điện thoại của bạn để xác thực.</string>
     <string name="your_phone">Phone Number\n</string>
-
+    <string name="navigation_drawer_open">Mở menu</string>
+    <string name="navigation_drawer_close">Đóng menu</string>
 </resources>

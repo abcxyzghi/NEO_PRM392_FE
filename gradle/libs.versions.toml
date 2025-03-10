@@ -13,6 +13,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+jwtdecode = "2.0.2"
 material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
@@ -26,6 +27,7 @@ playServicesMeasurementImpl = "22.3.0"
 playServicesMeasurementSdk = "22.3.0"
 playServicesMeasurementSdkApi = "22.3.0"
 retrofit = "2.9.0"
+glide = "4.12.0"
 
 [libraries]
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
@@ -43,6 +45,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+jwtdecode = { module = "com.auth0.android:jwtdecode", version.ref = "jwtdecode" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
@@ -57,6 +60,8 @@ play-services-measurement-impl = { module = "com.google.android.gms:play-service
 play-services-measurement-sdk = { module = "com.google.android.gms:play-services-measurement-sdk", version.ref = "playServicesMeasurementSdk" }
 play-services-measurement-sdk-api = { module = "com.google.android.gms:play-services-measurement-sdk-api", version.ref = "playServicesMeasurementSdkApi" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -4,6 +4,7 @@ import static com.google.android.gms.auth.api.signin.GoogleSignIn.*;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.*;
 
@@ -27,6 +28,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.*;
 import com.google.firebase.database.annotations.NotNull;
 
+import org.json.JSONObject;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -48,6 +52,11 @@ public class Login extends AppCompatActivity {
     setContentView(R.layout.signin);
 
     mAuth = FirebaseAuth.getInstance();
+
+    String savedToken = getSharedPreferences("AppPrefs", MODE_PRIVATE).getString("auth_token", null);
+    if (savedToken != null) {
+      RetrofitClient.setAuthToken(savedToken);
+    }
 
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -116,8 +125,12 @@ public class Login extends AppCompatActivity {
       public void onResponse(@NonNull Call<LoginResponse> call, @NonNull Response<LoginResponse> response) {
         if (response.isSuccessful() && response.body() != null) {
           LoginResponse loginResponse = response.body();
-          String role = loginResponse.getRole();
-
+          String token = loginResponse.getToken();
+          if (token != null) {
+            saveAuthToken(token);
+            RetrofitClient.setAuthToken(token);
+          }
+          String role = decodeJwtRole(token);
           redirectBasedOnRole(role);
           Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
         } else {
@@ -134,14 +147,16 @@ public class Login extends AppCompatActivity {
 
 
   private void redirectBasedOnRole(String role) {
-    if ("admin".equals(role)) {
-      startActivity(new Intent(Login.this, AdminActivity.class));
+    Intent intent;
+    if ("ADMIN".equals(role)) {
+      intent = new Intent(Login.this, AdminActivity.class);
     } else {
-      startActivity(new Intent(Login.this, MainActivity.class));
+      intent = new Intent(Login.this, MainActivity.class);
     }
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+    startActivity(intent);
     finish();
   }
-
   private void signInWithGoogle() {
     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
     startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -169,8 +184,8 @@ public class Login extends AppCompatActivity {
             .addOnCompleteListener(this, task -> {
               if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                  assert user != null;
-                  Toast.makeText(this, "Sign-in successful: " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                assert user != null;
+                Toast.makeText(this, "Sign-in successful: " + user.getEmail(), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(Login.this, MainActivity.class));
                 finish();
               } else {
@@ -179,4 +194,32 @@ public class Login extends AppCompatActivity {
               }
             });
   }
+
+  private void saveAuthToken(String token) {
+    getSharedPreferences("AppPrefs", MODE_PRIVATE)
+            .edit()
+            .putString("auth_token", token)
+            .apply();
+  }
+
+  private String decodeJwtRole(String token) {
+    try {
+      String[] parts = token.split("\\.");
+      if (parts.length != 3) {
+        return "USER";
+      }
+
+      // Giải mã phần payload (Base64 URL-Safe)
+      byte[] decodedBytes = Base64.decode(parts[1], Base64.URL_SAFE);
+      String payload = new String(decodedBytes, StandardCharsets.UTF_8);
+
+      // Chuyển payload thành JSON và lấy role
+      JSONObject jsonObject = new JSONObject(payload);
+      return jsonObject.optString("role", "USER");
+    } catch (Exception e) {
+      e.printStackTrace();
+      return "USER";
+    }
+  }
+
 }

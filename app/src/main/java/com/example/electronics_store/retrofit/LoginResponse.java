@@ -1,22 +1,38 @@
 package com.example.electronics_store.retrofit;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LoginResponse {
-    private String token;
-    private String role;
+    @SerializedName("message")
+    private String message;
+
+    @SerializedName("success")
+    private boolean success;
+
+    @SerializedName("errorCode")
+    private String errorCode;
+
+    @SerializedName("data")
+    private LoginData data;
 
     public String getToken() {
-        return token;
+        return data != null ? data.getToken() : null;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public String getMessage() {
+        return message;
     }
 
-    public String getRole() {
-        return role;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public String getErrorCode() {
+        return errorCode;
     }
+
+    public LoginData getData() {
+        return data;
+    }
+
 }

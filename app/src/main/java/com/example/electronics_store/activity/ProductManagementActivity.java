@@ -1,30 +1,27 @@
 package com.example.electronics_store.activity;
+import com.example.electronics_store.R;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.electronics_store.R;
-import com.example.electronics_store.adapter.UserAdapter;
-import com.example.electronics_store.adapter.UserManagementAdapter;
+import com.example.electronics_store.adapter.ProductAdapter;
 import com.example.electronics_store.retrofit.ApiService;
+import com.example.electronics_store.retrofit.ProductResponse;
 import com.example.electronics_store.retrofit.RetrofitClient;
-import com.example.electronics_store.retrofit.UserResponse;
 import com.google.android.material.navigation.NavigationView;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -36,23 +33,29 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UserManagementActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private UserManagementAdapter userAdapter;
+public class ProductManagementActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private RecyclerView recyclerView;
     private DrawerLayout drawerLayout;
+    private Button AddPrdBtn, BtnReload;
+    private ProductAdapter productAdapter;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.usermanagement);
+        setContentView(R.layout.activity_product_management);
+        AddPrdBtn = findViewById(R.id.btnAddProduct);
 
+        AddPrdBtn.setOnClickListener(v-> {
+            Intent intent = new Intent(ProductManagementActivity.this, AddProductActivity.class);
+            startActivity(intent);
+        });
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Danh Sách Người Dùng");
+        getSupportActionBar().setTitle("Danh Sách Sản Phẩm");
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
+        BtnReload = findViewById(R.id.btnReload);
+        BtnReload.setOnClickListener(v -> fetchProducts());
+        drawerLayout = findViewById(R.id.main);
         NavigationView navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -62,38 +65,34 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        productAdapter = new ProductAdapter(new ArrayList<>(), this);
+        recyclerView.setAdapter(productAdapter);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
-        userAdapter = new UserManagementAdapter(new ArrayList<>());
-        recyclerView.setAdapter(userAdapter);
-
-        fetchUsers();
+        fetchProducts();
     }
-    private void fetchUsers() {
-        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<List<UserResponse>> call = apiService.getAllUsers();
 
-        call.enqueue(new Callback<List<UserResponse>>() {
+    private void fetchProducts() {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<List<ProductResponse>> call = apiService.getProducts();
+
+        call.enqueue(new Callback<List<ProductResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<List<UserResponse>> call, @NonNull Response<List<UserResponse>> response) {
+            public void onResponse(@NonNull Call<List<ProductResponse>> call, @NonNull Response<List<ProductResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    userAdapter.setUserList(response.body());
+                    productAdapter.setProductList(response.body());
                 } else {
-                    Toast.makeText(UserManagementActivity.this, "Lỗi khi tải danh sách người dùng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProductManagementActivity.this, "Lỗi khi tải danh sách sản phẩm", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserResponse>> call, @NonNull Throwable t) {
-                Toast.makeText(UserManagementActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<List<ProductResponse>> call, @NonNull Throwable t) {
+                Toast.makeText(ProductManagementActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

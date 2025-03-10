@@ -4,12 +4,10 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,18 +16,39 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".activity.AddProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EditProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.UserManagementActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.CategoryManagementActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ProductManagementActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
+
         <activity android:name=".activity.Register" />
         <activity android:name=".activity.ForgotPasswordActivity" />
         <activity android:name=".activity.OtpVerificationActivity" />
         <activity android:name=".activity.PhoneVerificationActivity" />
         <activity android:name=".activity.ResetPasswordActivity" />
-        <activity android:name=".activity.AdminActivity" />
-
-        <activity android:name=".activity.Login" android:exported="true">
+        <activity
+            android:name=".activity.AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.Login"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,13 +57,10 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
-
-        </activity>
-<!--        //Nho nhap gg map key-->
+            android:exported="true" /> <!-- //Nho nhap gg map key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY_HERE"/>
+            android:value="YOUR_API_KEY_HERE" />
     </application>
 
 </manifest>

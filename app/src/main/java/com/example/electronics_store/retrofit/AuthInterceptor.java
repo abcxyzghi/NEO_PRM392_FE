@@ -1,5 +1,7 @@
 package com.example.electronics_store.retrofit;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
@@ -18,6 +20,7 @@ public class AuthInterceptor implements Interceptor {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+        Log.d("AuthInterceptor", "Token được cập nhật: " + authToken);
     }
 
     @NonNull
@@ -30,8 +33,9 @@ public class AuthInterceptor implements Interceptor {
                     .addHeader("Authorization", "Bearer " + authToken)
                     .build();
             return chain.proceed(newRequest);
+        } else {
+            Log.d("AuthInterceptor", "Không có token!");
         }
-
         return chain.proceed(originalRequest);
     }
 }
