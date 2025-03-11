@@ -1,0 +1,64 @@
+package com.example.electronics_store.adapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.electronics_store.R;
+import com.example.electronics_store.retrofit.OrderResponse;
+
+import org.checkerframework.common.returnsreceiver.qual.This;
+
+import java.util.List;
+public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagementAdapter.ViewHolder> {
+    private List<OrderResponse> orderList;
+
+    public OrderManagementAdapter(List<OrderResponse> orderList) {
+        this.orderList = orderList;
+    }
+
+    public void setOrderList(List<OrderResponse> orderList) {
+        this.orderList = orderList;
+        notifyDataSetChanged();
+    }
+
+
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
+//        return new ViewHolder(view);
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        OrderResponse order = orderList.get(position);
+        holder.txtOrderId.setText("Mã đơn: " + order.getId());
+        holder.txtUserId.setText("Mã khách: " + order.getUserId());
+        holder.txtTotalPrice.setText("Tổng tiền: " + order.getTotalPrice() + " VNĐ");
+        holder.txtStatus.setText("Trạng thái: " + order.getStatus());
+        holder.txtCreatedAt.setText("Ngày tạo: " + order.getCreatedAt());
+    }
+
+    @Override
+    public int getItemCount() {
+        return orderList.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView txtOrderId, txtUserId, txtTotalPrice, txtStatus, txtCreatedAt;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(null);
+//            super(itemView);
+//            txtOrderId = itemView.findViewById(R.id.txtOrderId);
+//            txtUserId = itemView.findViewById(R.id.txtUserId);
+//            txtTotalPrice = itemView.findViewById(R.id.txtTotalPrice);
+//            txtStatus = itemView.findViewById(R.id.txtStatus);
+//            txtCreatedAt = itemView.findViewById(R.id.txtCreatedAt);
+        }
+    }
+}

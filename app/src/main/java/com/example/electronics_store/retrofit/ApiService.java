@@ -27,12 +27,6 @@ public interface ApiService {
     @GET("admin/accounts/{id}")
     Call<UserDetail> getUserDetail(@Path("id") int userId);
 
-    @PUT("admin/accounts/{id}/ban")
-    Call<Void> banUser(@Path("id") int userId);
-
-    @PUT("admin/accounts/{id}/unban")
-    Call<Void> unbanUser(@Path("id") int userId);
-
     @GET("admin/accounts")
     Call<List<UserResponse>> getAllUsers();
 
@@ -56,4 +50,22 @@ public interface ApiService {
 
     @DELETE("admin/categories/{id}")
     Call<Void> deleteCategory(@Path("id") int id);
+
+    @GET("admin/products/{id}")
+    Call<ProductRequest> getProductById(@Path("id") int id);
+
+    @PUT("admin/products/{id}")
+    Call<Void> updateProduct(@Path("id") int id, @Body ProductRequest productRequest);
+
+    @PATCH("/admin/accounts/{id}")
+    Call<Void> updateUser(@Path("id") int userId, @Body UserUpdateRequest userUpdateRequest);
+
+    @GET("admin/orders")
+    Call<List<OrderResponse>> getAllOrders();
+
+    @PUT("admin/accounts/{id}/ban")
+    Call<Void> banUser(@Path("id") int userId);
+
+    @PUT("admin/accounts/{id}/unban")
+    Call<Void> unbanUser(@Path("id") int userId);
 }

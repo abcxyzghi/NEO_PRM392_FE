@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -10,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tên"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <TextView
@@ -18,14 +19,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Email"
-        android:textSize="14sp" />
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/User_txtRole"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Vai trò"
-        android:textSize="14sp"
+        android:textSize="20sp"
         android:textStyle="italic"/>
+
+    <TextView
+        android:id="@+id/User_txtStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Trạng Thái"
+        android:textSize="20sp"
+        android:textStyle="italic"/>
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:id="@+id/btnUpdateUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#FF5722"
+        android:text="Cập nhật"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/btnBanUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#00BCD4"
+        android:text="Ban"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btnUnbanUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="#00BCD4"
+        android:text="Unban"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
 
 </LinearLayout>

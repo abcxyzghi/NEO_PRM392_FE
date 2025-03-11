@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:layout_marginTop="10dp"
-    tools:context=".activity.EditProductActivity"
+    android:layout_height="match_parent"
+    tools:context=".activity.UpdateUserActivity"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
     <ImageView
-        android:id="@+id/ivProductImage"
+        android:id="@+id/ivAvatar"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
@@ -22,23 +22,23 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tên sản phẩm"
+        android:text="Họ và tên"
         android:textSize="16sp"
         android:textStyle="bold"
         android:paddingBottom="4dp" />
 
     <EditText
         android:textColor="@color/black"
-        android:id="@+id/etProductName"
+        android:id="@+id/etUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập tên sản phẩm"
+        android:hint="Nhập họ và tên"
         android:minHeight="48dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mô tả"
+        android:text="Số điện thoại"
         android:textSize="16sp"
         android:textStyle="bold"
         android:paddingTop="8dp"
@@ -46,16 +46,16 @@
 
     <EditText
         android:textColor="@color/black"
-        android:id="@+id/etProductDescription"
+        android:id="@+id/etPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập mô tả"
+        android:hint="Nhập số điện thoại"
         android:minHeight="48dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Giá sản phẩm"
+        android:text="Avatar URL"
         android:textSize="16sp"
         android:textStyle="bold"
         android:paddingTop="8dp"
@@ -63,44 +63,10 @@
 
     <EditText
         android:textColor="@color/black"
-        android:id="@+id/etProductPrice"
+        android:id="@+id/etAvatarUrl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nhập giá sản phẩm"
-        android:minHeight="48dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Số lượng tồn kho"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp" />
-
-    <EditText
-        android:textColor="@color/black"
-        android:id="@+id/etProductStock"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập số lượng tồn kho"
-        android:minHeight="48dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Link hình ảnh"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp" />
-
-    <EditText
-        android:textColor="@color/black"
-        android:id="@+id/etProductImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nhập link hình ảnh"
+        android:hint="Nhập link avatar"
         android:minHeight="48dp" />
 
     <Button

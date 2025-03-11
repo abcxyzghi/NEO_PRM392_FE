@@ -149,7 +149,7 @@ public class Login extends AppCompatActivity {
   private void redirectBasedOnRole(String role) {
     Intent intent;
     if ("ADMIN".equals(role)) {
-      intent = new Intent(Login.this, AdminActivity.class);
+      intent = new Intent(Login.this, UserManagementActivity.class);
     } else {
       intent = new Intent(Login.this, MainActivity.class);
     }

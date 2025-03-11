@@ -117,17 +117,29 @@ public class CategoryManagementActivity extends AppCompatActivity implements Nav
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            startActivity(new Intent(this, AdminActivity.class));
-        } else if (id == R.id.nav_users) {
+        if (id == R.id.nav_users) {
             startActivity(new Intent(this, UserManagementActivity.class));
         } else if (id == R.id.nav_products) {
             startActivity(new Intent(this, ProductManagementActivity.class));
         } else if (id == R.id.nav_categories) {
             startActivity(new Intent(this, CategoryManagementActivity.class));
+        } else if (id == R.id.nav_orders) {
+            startActivity(new Intent(this, OrderManagementActivity.class));
+        } else if (id == R.id.nav_logout) {
+            logout();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout() {
+        RetrofitClient.setAuthToken(null);
+
+        Intent intent = new Intent(this, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }

@@ -3,32 +3,25 @@ package com.example.electronics_store.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.widget.Toolbar;
-
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electronics_store.R;
-import com.example.electronics_store.adapter.UserAdapter;
-import com.example.electronics_store.adapter.UserManagementAdapter;
+import com.example.electronics_store.adapter.OrderManagementAdapter;
 import com.example.electronics_store.retrofit.ApiService;
+import com.example.electronics_store.retrofit.OrderResponse;
 import com.example.electronics_store.retrofit.RetrofitClient;
-import com.example.electronics_store.retrofit.UserResponse;
-import com.example.electronics_store.retrofit.UserUpdateRequest;
 import com.google.android.material.navigation.NavigationView;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,26 +30,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UserManagementActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private UserManagementAdapter userAdapter;
+public class OrderManagementActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
-    private Button reloadBtn;
+    private RecyclerView recyclerViewOrders;
+    private OrderManagementAdapter orderAdapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.usermanagement);
+        setContentView(R.layout.activity_order_management);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Danh Sách Người Dùng");
-        reloadBtn = findViewById(R.id.btnReloadUser);
-        reloadBtn.setOnClickListener(v-> {
-            Toast.makeText(UserManagementActivity.this, "Đang tải lại danh sách...", Toast.LENGTH_SHORT).show();
-            fetchUsers();
-        });
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        getSupportActionBar().setTitle("Đơn Hàng");
 
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.navigation_view);
@@ -68,38 +55,36 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerViewOrders = findViewById(R.id.recyclerViewOrders);
+        recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewOrders.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this, layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        orderAdapter = new OrderManagementAdapter(new ArrayList<>());
+        recyclerViewOrders.setAdapter(orderAdapter);
 
-        userAdapter = new UserManagementAdapter(new ArrayList<>());
-        recyclerView.setAdapter(userAdapter);
-
-        fetchUsers();
+        fetchOrders();
     }
-    private void fetchUsers() {
-        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<List<UserResponse>> call = apiService.getAllUsers();
 
-        call.enqueue(new Callback<List<UserResponse>>() {
+    private void fetchOrders() {
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<List<OrderResponse>> call = apiService.getAllOrders();
+
+        call.enqueue(new Callback<List<OrderResponse>>() {
             @Override
-            public void onResponse(@NonNull Call<List<UserResponse>> call, @NonNull Response<List<UserResponse>> response) {
+            public void onResponse(@NonNull Call<List<OrderResponse>> call, @NonNull Response<List<OrderResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    userAdapter.setUserList(response.body());
+                    orderAdapter.setOrderList(response.body());
                 } else {
-                    Toast.makeText(UserManagementActivity.this, "Lỗi khi tải danh sách người dùng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(OrderManagementActivity.this, "Lỗi khi tải danh sách đơn hàng", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<UserResponse>> call, @NonNull Throwable t) {
-                Toast.makeText(UserManagementActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Call<List<OrderResponse>> call, @NonNull Throwable t) {
+                Toast.makeText(OrderManagementActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
