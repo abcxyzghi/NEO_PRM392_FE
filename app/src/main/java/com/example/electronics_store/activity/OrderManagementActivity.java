@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,10 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
     private DrawerLayout drawerLayout;
     private RecyclerView recyclerViewOrders;
     private OrderManagementAdapter orderAdapter;
+    private Button btnSearchOrder;
+    private EditText edtSearchOrder;
+    private List<OrderResponse> allOrders = new ArrayList<>();
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -56,6 +62,9 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
         toggle.syncState();
 
         recyclerViewOrders = findViewById(R.id.recyclerViewOrders);
+        edtSearchOrder = findViewById(R.id.edtSearchOrder);
+        btnSearchOrder = findViewById(R.id.btnSearchOrder);
+
         recyclerViewOrders.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewOrders.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
@@ -63,6 +72,15 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
         recyclerViewOrders.setAdapter(orderAdapter);
 
         fetchOrders();
+
+        btnSearchOrder.setOnClickListener(v -> {
+            String query = edtSearchOrder.getText().toString().trim();
+            if(query.isEmpty()){
+                Toast.makeText(OrderManagementActivity.this,"Vui lòng nhập Mã Đơn Hàng", Toast.LENGTH_SHORT).show();
+            } else {
+                filterOrders(query);
+            }
+        });
     }
 
     private void fetchOrders() {
@@ -74,6 +92,7 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
             public void onResponse(@NonNull Call<List<OrderResponse>> call, @NonNull Response<List<OrderResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     orderAdapter.setOrderList(response.body());
+                    allOrders = response.body();
                 } else {
                     Toast.makeText(OrderManagementActivity.this, "Lỗi khi tải danh sách đơn hàng", Toast.LENGTH_SHORT).show();
                 }
@@ -114,5 +133,21 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
         startActivity(intent);
         Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void filterOrders(String query) {
+        if (query.isEmpty()) {
+            orderAdapter.setOrderList(allOrders);
+            return;
+        }
+
+        List<OrderResponse> filteredList = new ArrayList<>();
+        for (OrderResponse order : allOrders) {
+            if (String.valueOf(order.getId()).contains(query)) {
+                filteredList.add(order);
+            }
+        }
+
+        orderAdapter.setOrderList(filteredList);
     }
 }

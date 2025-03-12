@@ -25,12 +25,11 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
         notifyDataSetChanged();
     }
 
-
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
-//        return new ViewHolder(view);
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_order, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -52,13 +51,12 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
         TextView txtOrderId, txtUserId, txtTotalPrice, txtStatus, txtCreatedAt;
 
         public ViewHolder(@NonNull View itemView) {
-            super(null);
-//            super(itemView);
-//            txtOrderId = itemView.findViewById(R.id.txtOrderId);
-//            txtUserId = itemView.findViewById(R.id.txtUserId);
-//            txtTotalPrice = itemView.findViewById(R.id.txtTotalPrice);
-//            txtStatus = itemView.findViewById(R.id.txtStatus);
-//            txtCreatedAt = itemView.findViewById(R.id.txtCreatedAt);
+            super(itemView);
+            txtOrderId = itemView.findViewById(R.id.Order_txtId);
+            txtUserId = itemView.findViewById(R.id.Order_txtUserId);
+            txtTotalPrice = itemView.findViewById(R.id.Order_txtTotalPrice);
+            txtStatus = itemView.findViewById(R.id.Order_txtStatus);
+            txtCreatedAt = itemView.findViewById(R.id.Order_txtCreatedDate);
         }
     }
 }

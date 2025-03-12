@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,12 +39,19 @@ public class ProductManagementActivity extends AppCompatActivity implements Navi
     private DrawerLayout drawerLayout;
     private Button AddPrdBtn, BtnReload;
     private ProductAdapter productAdapter;
+    private EditText edtSearchProduct;
+    private Button btnSearchProduct;
+    private List<ProductResponse> productList = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_management);
         AddPrdBtn = findViewById(R.id.btnAddProduct);
+        edtSearchProduct = findViewById(R.id.edtSearchProduct);
+        btnSearchProduct = findViewById(R.id.btnSearchProduct);
+        btnSearchProduct.setOnClickListener(v -> searchProduct());
 
         AddPrdBtn.setOnClickListener(v-> {
             Intent intent = new Intent(ProductManagementActivity.this, AddProductActivity.class);
@@ -73,6 +81,24 @@ public class ProductManagementActivity extends AppCompatActivity implements Navi
         fetchProducts();
     }
 
+    private void searchProduct() {
+        String query = edtSearchProduct.getText().toString().trim().toLowerCase();
+        if (query.isEmpty()) {
+            productAdapter.setProductList(productList);
+            return;
+        }
+
+        List<ProductResponse> filteredList = new ArrayList<>();
+        for (ProductResponse product : productList) {
+            if (product.getName().toLowerCase().contains(query)) {
+                filteredList.add(product);
+            }
+        }
+
+        productAdapter.setProductList(filteredList);
+    }
+
+
     private void fetchProducts() {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<ProductResponse>> call = apiService.getProducts();
@@ -82,6 +108,7 @@ public class ProductManagementActivity extends AppCompatActivity implements Navi
             public void onResponse(@NonNull Call<List<ProductResponse>> call, @NonNull Response<List<ProductResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     productAdapter.setProductList(response.body());
+                    productList = response.body();
                 } else {
                     Toast.makeText(ProductManagementActivity.this, "Lỗi khi tải danh sách sản phẩm", Toast.LENGTH_SHORT).show();
                 }

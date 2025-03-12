@@ -24,6 +24,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <EditText
+                    android:id="@+id/edtSearchOrder"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:hint="Nhập mã đơn hàng..."
+                    android:padding="8dp"
+                    android:background="@android:drawable/edit_text"
+                    android:inputType="number" />
+
+                <Button
+                    android:id="@+id/btnSearchOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_button"
+                    android:textColor="@color/white"
+                    android:backgroundTint="#3FAFFF"
+                    android:text="Tìm kiếm" />
+            </LinearLayout>
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewOrders"
                 android:layout_width="match_parent"

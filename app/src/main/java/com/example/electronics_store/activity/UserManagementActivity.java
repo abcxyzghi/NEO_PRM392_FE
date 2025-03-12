@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -41,13 +42,25 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
     private UserManagementAdapter userAdapter;
     private DrawerLayout drawerLayout;
     private Button reloadBtn;
+    private EditText edtSearchPhone;
+    private Button btnSearchUser;
+    private List<UserResponse> userList = new ArrayList<>();
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.usermanagement);
-
+        edtSearchPhone = findViewById(R.id.edtSearchPhone);
+        btnSearchUser = findViewById(R.id.btnSearchUser);
+        btnSearchUser.setOnClickListener(v -> {
+            String phoneNumber = edtSearchPhone.getText().toString().trim();
+            if (!phoneNumber.isEmpty()) {
+                filterUsers(phoneNumber);
+            } else {
+                Toast.makeText(this, "Vui lòng nhập số điện thoại", Toast.LENGTH_SHORT).show();
+            }
+        });
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Danh Sách Người Dùng");
@@ -87,6 +100,7 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
             @Override
             public void onResponse(@NonNull Call<List<UserResponse>> call, @NonNull Response<List<UserResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    userList = response.body();
                     userAdapter.setUserList(response.body());
                 } else {
                     Toast.makeText(UserManagementActivity.this, "Lỗi khi tải danh sách người dùng", Toast.LENGTH_SHORT).show();
@@ -130,4 +144,15 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
         Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
         finish();
     }
+
+    private void filterUsers(String phoneNumber) {
+        List<UserResponse> filteredList = new ArrayList<>();
+        for (UserResponse user : userList) {
+            if (user.getPhoneNumber().contains(phoneNumber)) {
+                filteredList.add(user);
+            }
+        }
+        userAdapter.setUserList(filteredList);
+    }
+
 }

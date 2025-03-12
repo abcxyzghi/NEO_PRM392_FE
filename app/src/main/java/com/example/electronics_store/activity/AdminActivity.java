@@ -1,5 +1,6 @@
 package com.example.electronics_store.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -30,6 +31,7 @@ import retrofit2.Response;
 public class AdminActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +65,7 @@ public class AdminActivity extends AppCompatActivity implements NavigationView.O
             startActivity(new Intent(this, CategoryManagementActivity.class));
         } else if (id == R.id.nav_orders) {
              startActivity(new Intent(this, OrderManagementActivity.class));
-         }
+        }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
