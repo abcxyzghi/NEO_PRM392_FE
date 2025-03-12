@@ -51,6 +51,9 @@
         <activity android:name=".activity.ResetPasswordActivity" />
         <activity android:name=".activity.ProductListActivity" />
 
+        <activity android:name=".activity.ProductDetailActivity" />
+
+
         <activity
             android:name=".activity.AdminActivity"
             android:exported="false" />
