@@ -1,7 +1,9 @@
 package com.example.electronics_store.adapter;
 
 import android.content.Context;
+
 import android.content.Intent;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.electronics_store.R;
+
 import com.example.electronics_store.activity.ProductDetailActivity;
+
 import com.example.electronics_store.retrofit.ProductResponse;
 
 import java.text.DecimalFormat;
@@ -37,6 +41,7 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProductResponse product = productList.get(position);
         holder.productName.setText(product.getName());
+
         holder.productPrice.setText(formatPrice(product.getPrice()) + " VND");
 
         Glide.with(context).load(product.getImageUrl()).into(holder.productImage);
@@ -52,6 +57,21 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
         return String.format("%,.0f", price); // Format thành dạng 1,000,000
     }
 
+
+
+
+        // Định dạng giá tiền
+        String formattedPrice = formatCurrency(product.getPrice());
+        holder.productPrice.setText(formattedPrice);
+
+        // Load ảnh sản phẩm
+        Glide.with(context).load(product.getImageUrl()).into(holder.productImage);
+    }
+
+    private String formatCurrency(double price) {
+        DecimalFormat formatter = new DecimalFormat("#,###,### VND");
+        return formatter.format(price);
+    }
 
     @Override
     public int getItemCount() {
