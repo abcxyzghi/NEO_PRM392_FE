@@ -13,6 +13,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("auth/register")
@@ -68,4 +69,16 @@ public interface ApiService {
 
     @PUT("admin/accounts/{id}/unban")
     Call<Void> unbanUser(@Path("id") int userId);
+
+    @GET("api/products")
+    Call<List<ProductResponse>> getAllProducts(
+            @Query("sortBy") String sortBy,
+            @Query("direction") String direction,
+            @Query("categoryId") Integer categoryId,
+            @Query("minPrice") Double minPrice,
+            @Query("maxPrice") Double maxPrice,
+            @Query("search") String search,
+            @Query("minStock") Integer minStock,
+            @Query("maxStock") Integer maxStock
+    );
 }

@@ -151,7 +151,7 @@ public class Login extends AppCompatActivity {
     if ("ADMIN".equals(role)) {
       intent = new Intent(Login.this, UserManagementActivity.class);
     } else {
-      intent = new Intent(Login.this, MainActivity.class);
+      intent = new Intent(Login.this, ProductListActivity.class);
     }
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     startActivity(intent);
