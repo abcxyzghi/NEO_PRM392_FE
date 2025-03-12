@@ -1,22 +1,18 @@
 package com.example.electronics_store.adapter;
 
 import android.content.Context;
-
 import android.content.Intent;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.electronics_store.R;
-
 import com.example.electronics_store.activity.ProductDetailActivity;
-
 import com.example.electronics_store.retrofit.ProductResponse;
-
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -42,10 +38,13 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
         ProductResponse product = productList.get(position);
         holder.productName.setText(product.getName());
 
-        holder.productPrice.setText(formatPrice(product.getPrice()) + " VND");
+        // Định dạng giá tiền và hiển thị
+        holder.productPrice.setText(formatPrice(product.getPrice()));
 
+        // Load ảnh sản phẩm bằng Glide
         Glide.with(context).load(product.getImageUrl()).into(holder.productImage);
 
+        // Xử lý sự kiện click vào item
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ProductDetailActivity.class);
             intent.putExtra("product", product);
@@ -54,28 +53,13 @@ public class UserProductAdapter extends RecyclerView.Adapter<UserProductAdapter.
     }
 
     private String formatPrice(double price) {
-        return String.format("%,.0f", price); // Format thành dạng 1,000,000
-    }
-
-
-
-
-        // Định dạng giá tiền
-        String formattedPrice = formatCurrency(product.getPrice());
-        holder.productPrice.setText(formattedPrice);
-
-        // Load ảnh sản phẩm
-        Glide.with(context).load(product.getImageUrl()).into(holder.productImage);
-    }
-
-    private String formatCurrency(double price) {
         DecimalFormat formatter = new DecimalFormat("#,###,### VND");
         return formatter.format(price);
     }
 
     @Override
     public int getItemCount() {
-        return productList.size();
+        return productList != null ? productList.size() : 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
