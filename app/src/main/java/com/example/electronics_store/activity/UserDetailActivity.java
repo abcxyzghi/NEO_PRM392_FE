@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.electronics_store.R;
 import com.example.electronics_store.retrofit.ApiService;
 import com.example.electronics_store.retrofit.RetrofitClient;
-import com.example.electronics_store.Model.UserDetail;
+import com.example.electronics_store.model.UserDetail;
 import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;

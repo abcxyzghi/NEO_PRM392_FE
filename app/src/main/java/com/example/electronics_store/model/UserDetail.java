@@ -1,4 +1,4 @@
-package com.example.electronics_store.Model;
+package com.example.electronics_store.model;
 
 public class UserDetail {
     private int id;

@@ -1,4 +1,4 @@
-package com.example.electronics_store.Model;
+package com.example.electronics_store.model;
 
 public class User {
 
@@ -16,6 +16,16 @@ public class User {
         this.gender = gender;
         this.password = password;
         this.role = role;
+    }
+
+    // Constructor đơn giản để tạo user "Ẩn danh"
+    public User(String yourName) {
+        this.yourName = yourName;
+        this.emailAddress = "";
+        this.phone = "";
+        this.gender = "";
+        this.password = "";
+        this.role = "GUEST"; // Gán một vai trò mặc định
     }
 
     public String getRole() {

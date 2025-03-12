@@ -1,22 +1,5 @@
 package com.example.electronics_store.adapter;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.electronics_store.R;
-import com.example.electronics_store.Model.User;
-
-import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class UserAdapter {
         //extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
 //    private final Context context;

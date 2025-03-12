@@ -1,7 +1,7 @@
 package com.example.electronics_store.retrofit;
 
-import com.example.electronics_store.Model.User;
-import com.example.electronics_store.Model.UserDetail;
+import com.example.electronics_store.model.Review;
+import com.example.electronics_store.model.UserDetail;
 
 import java.util.List;
 
@@ -81,4 +81,13 @@ public interface ApiService {
             @Query("minStock") Integer minStock,
             @Query("maxStock") Integer maxStock
     );
+    @GET("api/products/{id}")
+    Call<ProductResponse> getProductDetail(@Path("id") int id);
+
+    // Changed to accept the ReviewRequest type
+    @POST("/api/reviews")
+    Call<Review> postReview(@Body ReviewRequest reviewRequest);
+
+    @GET("/api/reviews/product/{productId}")
+    Call<List<Review>> getReviewsByProductId(@Path("productId") int productId);
 }
