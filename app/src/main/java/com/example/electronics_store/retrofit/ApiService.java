@@ -96,5 +96,8 @@ public interface ApiService {
     @GET("/orders/me")
     Call<OrderListResponse> getUserOrders(@Header("Authorization") String token);
 
+    @GET("admin/orders/{id}")
+    Call<OrderResponse> getOrderDetail(@Path("id") int orderId);
+
 
 }
