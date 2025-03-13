@@ -1,5 +1,6 @@
 package com.example.electronics_store.retrofit;
 
+import com.example.electronics_store.adapter.OrderListResponse;
 import com.example.electronics_store.model.Review;
 import com.example.electronics_store.model.UserDetail;
 
@@ -9,6 +10,7 @@ import retrofit2.*;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -90,4 +92,9 @@ public interface ApiService {
 
     @GET("/api/reviews/product/{productId}")
     Call<List<Review>> getReviewsByProductId(@Path("productId") int productId);
+
+    @GET("/orders/me")
+    Call<OrderListResponse> getUserOrders(@Header("Authorization") String token);
+
+
 }

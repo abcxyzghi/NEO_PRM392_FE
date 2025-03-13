@@ -1,5 +1,9 @@
 package com.example.electronics_store.retrofit;
 
+import com.example.electronics_store.model.OrderDetail;
+
+import java.util.List;
+
 public class OrderResponse {
     private int id;
     private int userId;
@@ -7,7 +11,9 @@ public class OrderResponse {
     private String status;
     private String createdAt;
     private String updatedAt;
+    private List<OrderDetail> orderDetails; // Thêm danh sách sản phẩm
 
+    // Getter methods
     public int getId() {
         return id;
     }
@@ -32,4 +38,7 @@ public class OrderResponse {
         return updatedAt;
     }
 
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
 }
