@@ -2,6 +2,7 @@ package com.example.electronics_store.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,7 +30,7 @@ public class ProductListActivity extends AppCompatActivity {
     private EditText minPrice, maxPrice;
     private Button btnFilter;
     private List<CategoryResponse> categoryList;
-    private ImageButton btnCart, btnFavorite;
+    private ImageButton btnCart, btnFavorite, btnNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +39,6 @@ public class ProductListActivity extends AppCompatActivity {
 
         // Ánh xạ view
         searchView = findViewById(R.id.searchView);
-
-        // Đổi màu chữ nhập và hint trong SearchView
-        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-        if (searchEditText != null) {
-            searchEditText.setTextColor(getResources().getColor(android.R.color.black));
-            searchEditText.setHintTextColor(getResources().getColor(android.R.color.darker_gray));
-        }
-
         recyclerView = findViewById(R.id.recyclerView);
         spinnerCategory = findViewById(R.id.spinnerCategory);
         spinnerSort = findViewById(R.id.spinnerSort);
@@ -53,7 +46,25 @@ public class ProductListActivity extends AppCompatActivity {
         maxPrice = findViewById(R.id.maxPrice);
         btnFilter = findViewById(R.id.btnFilter);
         btnCart = findViewById(R.id.btnCart);
-        btnFavorite = findViewById(R.id.btnFavorite);  // Ánh xạ btnFavorite
+        btnFavorite = findViewById(R.id.btnFavorite);
+        btnNotification = findViewById(R.id.btnNotification);
+
+        // Kiểm tra null trước khi gán sự kiện
+        if (btnNotification == null) {
+            Log.e("ProductListActivity", "btnNotification is null!");
+        } else {
+            btnNotification.setOnClickListener(v -> {
+                Intent intent = new Intent(ProductListActivity.this, NotificationActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // Đổi màu chữ nhập và hint trong SearchView
+        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        if (searchEditText != null) {
+            searchEditText.setTextColor(getResources().getColor(android.R.color.black));
+            searchEditText.setHintTextColor(getResources().getColor(android.R.color.darker_gray));
+        }
 
         // Chuyển đến màn hình giỏ hàng
         btnCart.setOnClickListener(v -> {

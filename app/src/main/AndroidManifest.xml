@@ -55,8 +55,7 @@
         <activity android:name=".activity.CartActivity" />
         <activity android:name=".activity.FavoriteActivity"/>
         <activity android:name=".activity.PaymentActivity"/>
-
-
+        <activity android:name=".activity.NotificationActivity"/>
         <activity
             android:name=".activity.AdminActivity"
             android:exported="false" />
@@ -72,7 +71,7 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true" /> <!-- //Nho nhap gg map key -->
+            android:exported="true" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="YOUR_API_KEY_HERE" />

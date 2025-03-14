@@ -63,10 +63,9 @@ dependencies {
 
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
 
-
-
     implementation(libs.okhttp)
     implementation(libs.firebase.firestore)
+    implementation(libs.play.services.fido)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
