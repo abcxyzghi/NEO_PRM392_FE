@@ -1,13 +1,18 @@
 package com.example.electronics_store.adapter;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.electronics_store.R;
+import com.example.electronics_store.activity.OrderDetailActivity;
+import com.example.electronics_store.model.OrderDetail;
+import com.example.electronics_store.model.Product;
 import com.example.electronics_store.retrofit.OrderResponse;
 
 import org.checkerframework.common.returnsreceiver.qual.This;
@@ -40,15 +45,32 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
         holder.txtTotalPrice.setText("Tổng tiền: " + order.getTotalPrice() + " VNĐ");
         holder.txtStatus.setText("Trạng thái: " + order.getStatus());
         holder.txtCreatedAt.setText("Ngày tạo: " + order.getCreatedAt());
+        holder.btnViewDetails.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), OrderDetailActivity.class);
+            intent.putExtra("orderId", order.getId());
+            v.getContext().startActivity(intent);
+        });
+    StringBuilder productDetails = new StringBuilder();
+    if (order.getOrderDetails() != null) {
+        for (OrderDetail detail : order.getOrderDetails()) {
+            Product product = detail.getProduct();
+            if (product != null) {
+                productDetails.append("Tên: ").append(product.getName()).append("\n");
+                productDetails.append("Số lượng: ").append(detail.getQuantity()).append("\n");
+                productDetails.append("Giá: ").append(detail.getPrice()).append(" VNĐ\n\n");
+            }
+        }
     }
-
+    holder.txtProducts.setText(productDetails.toString());
+}
     @Override
     public int getItemCount() {
         return orderList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtOrderId, txtUserId, txtTotalPrice, txtStatus, txtCreatedAt;
+        TextView txtOrderId, txtUserId, txtTotalPrice, txtStatus, txtCreatedAt, txtProducts;
+        Button btnViewDetails;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,6 +79,9 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
             txtTotalPrice = itemView.findViewById(R.id.Order_txtTotalPrice);
             txtStatus = itemView.findViewById(R.id.Order_txtStatus);
             txtCreatedAt = itemView.findViewById(R.id.Order_txtCreatedDate);
+            txtProducts = itemView.findViewById(R.id.Order_txtProducts);
+            btnViewDetails = itemView.findViewById(R.id.btnViewDetails);
         }
     }
+
 }

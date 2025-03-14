@@ -1,6 +1,7 @@
 package com.example.electronics_store.retrofit;
 
 import com.example.electronics_store.model.OrderDetail;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -11,9 +12,10 @@ public class OrderResponse {
     private String status;
     private String createdAt;
     private String updatedAt;
-    private List<OrderDetail> orderDetails; // Thêm danh sách sản phẩm
 
-    // Getter methods
+    @SerializedName("orderDetail") // Khớp với JSON
+    private List<OrderDetail> orderDetails;
+
     public int getId() {
         return id;
     }

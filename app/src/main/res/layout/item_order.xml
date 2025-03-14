@@ -21,6 +21,15 @@
         android:textSize="20sp" />
 
     <TextView
+        android:id="@+id/Order_txtProducts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sản phẩm:"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:paddingTop="4dp"/>
+
+    <TextView
         android:id="@+id/Order_txtTotalPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,4 +52,11 @@
         android:text="Ngày tạo đơn"
         android:textSize="20sp"
         android:textStyle="italic"/>
+    <Button
+        android:id="@+id/btnViewDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xem Chi Tiết"
+        android:layout_marginTop="8dp"/>
+
 </LinearLayout>
