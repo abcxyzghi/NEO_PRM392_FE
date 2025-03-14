@@ -1,5 +1,6 @@
 package com.example.electronics_store.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import androidx.appcompat.widget.SearchView;
@@ -19,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.home);
+        setContentView(R.layout.activity_product_list);
         FirebaseApp.initializeApp(this);
 
         ImageView hamburger = findViewById(R.id.hamburger);
@@ -37,7 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
         notifications.setOnClickListener(v -> Toast.makeText(this, "Notifications clicked", Toast.LENGTH_SHORT).show());
 
-        cart.setOnClickListener(v -> Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show());
+        cart.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

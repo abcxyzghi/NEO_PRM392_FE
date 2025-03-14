@@ -47,13 +47,28 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Thêm vào giỏ" />
+            android:text="Thêm vào giỏ"
+            android:backgroundTint="@android:color/holo_blue_dark"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnAddToWishlist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Yêu thích" />
+            android:text="Yêu thích"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:textColor="@android:color/white" />
     </LinearLayout>
+
+    <!-- Nút Xóa khỏi yêu thích (Ẩn mặc định, chỉ hiển thị ở màn hình yêu thích) -->
+    <Button
+        android:id="@+id/btnRemoveFavorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Xóa khỏi yêu thích"
+        android:backgroundTint="@android:color/holo_red_dark"
+        android:textColor="@android:color/white"
+        android:paddingTop="8dp"
+        android:visibility="gone" />
 </LinearLayout>

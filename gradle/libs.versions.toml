@@ -28,6 +28,7 @@ playServicesMeasurementSdk = "22.3.0"
 playServicesMeasurementSdkApi = "22.3.0"
 retrofit = "2.9.0"
 glide = "4.12.0"
+carUiLib = "2.6.0"
 
 [libraries]
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
@@ -62,6 +63,7 @@ play-services-measurement-sdk-api = { module = "com.google.android.gms:play-serv
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

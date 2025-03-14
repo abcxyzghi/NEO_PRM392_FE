@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.gson)
     implementation(libs.circleimageview)
+    implementation ("androidx.cardview:cardview:1.0.0")
 
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
 
@@ -66,7 +67,6 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.firebase.firestore)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
