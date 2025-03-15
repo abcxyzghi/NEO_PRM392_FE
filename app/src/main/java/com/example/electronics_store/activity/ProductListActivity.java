@@ -36,7 +36,13 @@ public class ProductListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
-
+        Intent notificationIntent = getIntent();
+        if (notificationIntent != null && notificationIntent.getData() != null) {
+            String action = notificationIntent.getData().getHost();
+            if ("payment_success".equals(action)) {
+                Toast.makeText(this, "Thanh toán thành công! Quay về trang sản phẩm.", Toast.LENGTH_SHORT).show();
+            }
+        }
         // Ánh xạ view
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);

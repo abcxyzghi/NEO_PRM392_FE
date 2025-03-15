@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.*;
 
@@ -104,32 +106,53 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void processZaloPayPayment(double amount) {
-        List<OrderRequest.OrderItem> orderItems = new ArrayList<>();
-        for (ProductResponse product : cartList) {
-            orderItems.add(new OrderRequest.OrderItem(product.getId(), product.getQuantity()));
-        }
-
-        OrderRequest orderRequest = new OrderRequest(orderItems);
-        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-        Call<OrderResponse> call = apiService.createOrder(orderRequest);
-
-        call.enqueue(new Callback<OrderResponse>() {
+        new AsyncTask<Void, Void, JSONObject>() {
             @Override
-            public void onResponse(@NonNull Call<OrderResponse> call, @NonNull Response<OrderResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    Log.d("OrderResponse", "Order created successfully: " + response.body().getId());
-                    initiateZaloPay(amount);
-                } else {
-                    Toast.makeText(PaymentActivity.this, "Order creation failed", Toast.LENGTH_SHORT).show();
+            protected JSONObject doInBackground(Void... voids) {
+                try {
+                    CreateOrder createOrder = new CreateOrder();
+                    return createOrder.createOrder(String.valueOf((int) amount));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
                 }
             }
 
             @Override
-            public void onFailure(@NonNull Call<OrderResponse> call, @NonNull Throwable t) {
-                Toast.makeText(PaymentActivity.this, "API error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            protected void onPostExecute(JSONObject orderResponse) {
+                if (orderResponse != null) {
+                    Log.d("ZaloPayResponse", orderResponse.toString());
+
+                    if (orderResponse.has("order_url")) {
+                        try {
+                            String paymentUrl = orderResponse.getString("order_url");
+                            Log.d("ZaloPay", "Payment URL: " + paymentUrl);
+
+                            // Open ZaloPay for payment
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
+                            startActivity(intent);
+
+                            // ✅ Force redirect back to ProductListActivity after payment
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                Intent backIntent = new Intent(PaymentActivity.this, ProductListActivity.class);
+                                backIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(backIntent);
+                                finish();
+                            }, 5000); // Adjust delay if needed (5 seconds)
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(PaymentActivity.this, "Không thể tạo đơn hàng ZaloPay", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(PaymentActivity.this, "Lỗi khi kết nối ZaloPay", Toast.LENGTH_SHORT).show();
+                }
             }
-        });
+        }.execute();
     }
+
 
     private void initiateZaloPay(double amount) {
         new AsyncTask<Void, Void, JSONObject>() {
@@ -146,16 +169,26 @@ public class PaymentActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(JSONObject orderResponse) {
-                if (orderResponse != null && orderResponse.has("order_url")) {
-                    try {
-                        String paymentUrl = orderResponse.getString("order_url");
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
-                        startActivity(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                if (orderResponse != null) {
+                    Log.d("ZaloPayResponse", orderResponse.toString()); // 🛠 Debugging Log
+
+                    if (orderResponse.has("order_url")) {
+                        try {
+                            String paymentUrl = orderResponse.getString("order_url");
+                            Log.d("ZaloPay", "Payment URL: " + paymentUrl); // ✅ Log the Payment URL
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
+                            startActivity(intent);
+                            finish(); // ✅ Ensure PaymentActivity is closed
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.e("ZaloPay", "Missing order_url in response");
+                        Toast.makeText(PaymentActivity.this, "Không thể tạo đơn hàng ZaloPay", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(PaymentActivity.this, "Failed to create ZaloPay order", Toast.LENGTH_SHORT).show();
+                    Log.e("ZaloPay", "ZaloPay response is null");
+                    Toast.makeText(PaymentActivity.this, "Lỗi khi kết nối ZaloPay", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
