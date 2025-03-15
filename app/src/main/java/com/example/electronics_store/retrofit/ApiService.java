@@ -99,4 +99,9 @@ public interface ApiService {
     @POST("orders")
     Call<OrderResponse> createOrder(@Body OrderRequest orderRequest);
 
+    @PUT("api/account/change-password")
+    Call<Void> changePassword(
+            @Header("Authorization") String token,
+            @Body ChangePasswordRequest request
+    );
 }
