@@ -4,13 +4,19 @@ import java.util.List;
 
 public class OrderRequest {
     private List<OrderItem> items;
+    private String paymentMethod; // Add payment method field
 
-    public OrderRequest(List<OrderItem> items) {
+    public OrderRequest(List<OrderItem> items, String paymentMethod) {
         this.items = items;
+        this.paymentMethod = paymentMethod;
     }
 
     public List<OrderItem> getItems() {
         return items;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 
     public static class OrderItem {
