@@ -96,5 +96,7 @@ public interface ApiService {
     @GET("/orders/me")
     Call<OrderListResponse> getUserOrders(@Header("Authorization") String token);
 
+    @POST("orders")
+    Call<OrderResponse> createOrder(@Body OrderRequest orderRequest);
 
 }

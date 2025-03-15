@@ -8,17 +8,34 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import com.example.electronics_store.R;
 import com.example.electronics_store.adapter.CartItemAdapter;
+import com.example.electronics_store.retrofit.ApiService;
+import com.example.electronics_store.retrofit.OrderRequest;
+import com.example.electronics_store.retrofit.OrderResponse;
 import com.example.electronics_store.retrofit.ProductResponse;
+import com.example.electronics_store.Api.CreateOrder;
+import com.example.electronics_store.retrofit.RetrofitClient;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PaymentActivity extends AppCompatActivity {
     private EditText fullName, phoneNumber, email, address;
@@ -35,7 +52,6 @@ public class PaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.payment_activity);
 
-        // Ánh xạ View
         fullName = findViewById(R.id.fullName);
         phoneNumber = findViewById(R.id.phoneNumber);
         email = findViewById(R.id.email);
@@ -45,7 +61,6 @@ public class PaymentActivity extends AppCompatActivity {
         paymentOptions = findViewById(R.id.paymentMethodGroup);
         btnConfirmPayment = findViewById(R.id.orderButton);
 
-        // Nhận dữ liệu giỏ hàng từ Intent
         cartList = getIntent().getParcelableArrayListExtra("cartItems");
 
         if (cartList == null || cartList.isEmpty()) {
@@ -53,17 +68,11 @@ public class PaymentActivity extends AppCompatActivity {
             return;
         }
 
-        // Hiển thị giỏ hàng trong ListView
         cartAdapter = new CartItemAdapter(this, cartList);
         cartItemListView.setAdapter(cartAdapter);
 
-        // Tính tổng giá trị đơn hàng
         updateTotalPrice();
-
-        // Tạo kênh thông báo nếu cần
         createNotificationChannel();
-
-        // Xử lý nút đặt hàng
         btnConfirmPayment.setOnClickListener(v -> handleOrder());
     }
 
@@ -81,6 +90,7 @@ public class PaymentActivity extends AppCompatActivity {
 
         RadioButton selectedRadioButton = findViewById(selectedId);
         String paymentMethod = selectedRadioButton.getText().toString();
+        double totalAmount = calculateTotalAmount();
 
         if (paymentMethod.equals("Thanh toán tiền mặt khi nhận hàng")) {
             saveOrderNotification("Đơn hàng của bạn đã được đặt thành công!");
@@ -89,17 +99,79 @@ public class PaymentActivity extends AppCompatActivity {
             Toast.makeText(this, "Đặt hàng thành công!", Toast.LENGTH_SHORT).show();
             finish();
         } else if (paymentMethod.equals("Thanh toán qua ZaloPay")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://zalopay.vn/"));
-            startActivity(intent);
+            processZaloPayPayment(totalAmount);
         }
     }
 
-    private void updateTotalPrice() {
+    private void processZaloPayPayment(double amount) {
+        List<OrderRequest.OrderItem> orderItems = new ArrayList<>();
+        for (ProductResponse product : cartList) {
+            orderItems.add(new OrderRequest.OrderItem(product.getId(), product.getQuantity()));
+        }
+
+        OrderRequest orderRequest = new OrderRequest(orderItems);
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<OrderResponse> call = apiService.createOrder(orderRequest);
+
+        call.enqueue(new Callback<OrderResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<OrderResponse> call, @NonNull Response<OrderResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("OrderResponse", "Order created successfully: " + response.body().getId());
+                    initiateZaloPay(amount);
+                } else {
+                    Toast.makeText(PaymentActivity.this, "Order creation failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<OrderResponse> call, @NonNull Throwable t) {
+                Toast.makeText(PaymentActivity.this, "API error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initiateZaloPay(double amount) {
+        new AsyncTask<Void, Void, JSONObject>() {
+            @Override
+            protected JSONObject doInBackground(Void... voids) {
+                try {
+                    CreateOrder createOrder = new CreateOrder();
+                    return createOrder.createOrder(String.valueOf((int) amount));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject orderResponse) {
+                if (orderResponse != null && orderResponse.has("order_url")) {
+                    try {
+                        String paymentUrl = orderResponse.getString("order_url");
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(PaymentActivity.this, "Failed to create ZaloPay order", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+
+
+    private double calculateTotalAmount() {
         double total = 0.0;
         for (ProductResponse product : cartList) {
             total += product.getPrice() * product.getQuantity();
         }
-        totalPriceText.setText(String.format("%.0fđ", total));
+        return total;
+    }
+
+    private void updateTotalPrice() {
+        totalPriceText.setText(String.format("%.0fđ", calculateTotalAmount()));
     }
 
     private void createNotificationChannel() {
@@ -137,25 +209,17 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void sendOrderConfirmationEmail(String recipientEmail, String name, String address, String paymentMethod) {
         String subject = "Xác nhận đơn hàng từ Electronics Store";
-        String message = "Xin chào " + name + ",\n\n"
-                + "Cảm ơn bạn đã đặt hàng tại Electronics Store.\n\n"
-                + "Thông tin đơn hàng:\n"
-                + "Tên: " + name + "\n"
-                + "Địa chỉ: " + address + "\n"
-                + "Phương thức thanh toán: " + paymentMethod + "\n\n"
-                + "Chúng tôi sẽ sớm xử lý đơn hàng của bạn.\n\n"
-                + "Trân trọng,\n"
-                + "Electronics Store Team";
-
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-        emailIntent.setData(Uri.parse("mailto:" + recipientEmail));
+        String message = "Xin chào " + name + ",\n\n" +
+                "Cảm ơn bạn đã đặt hàng tại Electronics Store.\n\n" +
+                "Thông tin đơn hàng:\n" +
+                "Tên: " + name + "\n" +
+                "Địa chỉ: " + address + "\n" +
+                "Phương thức thanh toán: " + paymentMethod + "\n\n" +
+                "Chúng tôi sẽ sớm xử lý đơn hàng của bạn.\n\n" +
+                "Trân trọng,\nElectronics Store Team";
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + recipientEmail));
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         emailIntent.putExtra(Intent.EXTRA_TEXT, message);
-
-        try {
-            startActivity(Intent.createChooser(emailIntent, "Gửi email..."));
-        } catch (Exception e) {
-            Toast.makeText(this, "Không thể gửi email", Toast.LENGTH_SHORT).show();
-        }
+        startActivity(Intent.createChooser(emailIntent, "Gửi email..."));
     }
 }
