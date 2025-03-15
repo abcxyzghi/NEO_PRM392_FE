@@ -66,6 +66,11 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.fido)
+    implementation(fileTree(mapOf(
+        "dir" to "C:\\Users\\dante\\OneDrive\\Desktop\\libs",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf(" ")
+    )))
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
