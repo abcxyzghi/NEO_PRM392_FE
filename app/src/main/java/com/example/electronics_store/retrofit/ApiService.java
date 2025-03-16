@@ -98,5 +98,12 @@ public interface ApiService {
     @GET("/orders/me")
     Call<OrderListResponse> getUserOrders(@Header("Authorization") String token);
 
+    @POST("orders")
+    Call<OrderResponse> createOrder(@Body OrderRequest orderRequest);
 
+    @PUT("api/account/change-password")
+    Call<Void> changePassword(
+            @Header("Authorization") String token,
+            @Body ChangePasswordRequest request
+    );
 }
