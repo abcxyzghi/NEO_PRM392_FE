@@ -13,17 +13,19 @@ import com.bumptech.glide.Glide;
 import com.example.electronics_store.R;
 import com.example.electronics_store.model.OrderDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.ViewHolder> {
     private List<OrderDetail> orderDetailList;
 
     public OrderDetailAdapter(List<OrderDetail> orderDetailList) {
-        this.orderDetailList = orderDetailList;
+        this.orderDetailList = (orderDetailList != null) ? orderDetailList : new ArrayList<>();
     }
 
     public void setOrderDetailList(List<OrderDetail> orderDetailList) {
         this.orderDetailList = orderDetailList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -51,7 +53,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     @Override
     public int getItemCount() {
-        return orderDetailList.size();
+        return (orderDetailList != null) ? orderDetailList.size() : 0;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -60,11 +62,11 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgProduct = itemView.findViewById(R.id.imgProduct);
-            txtProductName = itemView.findViewById(R.id.txtProductName);
-            txtProductDescription = itemView.findViewById(R.id.txtProductDescription);
-            txtProductPrice = itemView.findViewById(R.id.txtProductPrice);
-            txtQuantity = itemView.findViewById(R.id.txtQuantity);
+            imgProduct = itemView.findViewById(R.id.d_imgProduct);
+            txtProductName = itemView.findViewById(R.id.d_txtProductName);
+            txtProductDescription = itemView.findViewById(R.id.d_txtProductDescription);
+            txtProductPrice = itemView.findViewById(R.id.d_txtProductTotalPrice);
+            txtQuantity = itemView.findViewById(R.id.d_txtQuantity);
         }
     }
 }
