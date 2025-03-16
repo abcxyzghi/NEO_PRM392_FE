@@ -65,6 +65,8 @@ public interface ApiService {
 
     @GET("admin/orders")
     Call<List<OrderResponse>> getAllOrders();
+    @GET("admin/orders/{id}")
+    Call<OrderResponse> getOrderById(@Path("id") int id);
 
     @PUT("admin/accounts/{id}/ban")
     Call<Void> banUser(@Path("id") int userId);

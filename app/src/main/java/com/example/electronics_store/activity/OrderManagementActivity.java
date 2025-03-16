@@ -41,7 +41,6 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
     private List<OrderResponse> allOrders = new ArrayList<>();
 
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +71,15 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
         recyclerViewOrders.setAdapter(orderAdapter);
 
         fetchOrders();
+
+        orderAdapter.setOnItemClickListener(order -> {
+            Intent intent = new Intent(OrderManagementActivity.this, OrderDetailActivity.class);
+            intent.putExtra("order_id", order.getId());
+            intent.putExtra("order_status", order.getStatus());
+            intent.putExtra("order_price", order.getTotalPrice());
+            intent.putExtra("order_user_id", order.getUserId());
+            startActivity(intent);
+        });
 
         btnSearchOrder.setOnClickListener(v -> {
             String query = edtSearchOrder.getText().toString().trim();
@@ -136,18 +144,26 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
     }
 
     private void filterOrders(String query) {
-        if (query.isEmpty()) {
-            orderAdapter.setOrderList(allOrders);
-            return;
-        }
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        int orderId = Integer.parseInt(query);
 
-        List<OrderResponse> filteredList = new ArrayList<>();
-        for (OrderResponse order : allOrders) {
-            if (String.valueOf(order.getId()).contains(query)) {
-                filteredList.add(order);
+        Call<OrderResponse> call = apiService.getOrderById(orderId);
+        call.enqueue(new Callback<OrderResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<OrderResponse> call, @NonNull Response<OrderResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<OrderResponse> filteredOrder = new ArrayList<>();
+                    filteredOrder.add(response.body());
+                    orderAdapter.setOrderList(filteredOrder);
+                } else {
+                    Toast.makeText(OrderManagementActivity.this, "Không tìm thấy đơn hàng!", Toast.LENGTH_SHORT).show();
+                }
             }
-        }
 
-        orderAdapter.setOrderList(filteredList);
+            @Override
+            public void onFailure(@NonNull Call<OrderResponse> call, @NonNull Throwable t) {
+                Toast.makeText(OrderManagementActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

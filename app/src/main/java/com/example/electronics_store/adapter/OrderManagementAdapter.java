@@ -2,6 +2,7 @@ package com.example.electronics_store.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,15 @@ import org.checkerframework.common.returnsreceiver.qual.This;
 import java.util.List;
 public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagementAdapter.ViewHolder> {
     private List<OrderResponse> orderList;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(OrderResponse order);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public OrderManagementAdapter(List<OrderResponse> orderList) {
         this.orderList = orderList;
