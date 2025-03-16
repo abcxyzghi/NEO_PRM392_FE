@@ -7,7 +7,7 @@
     android:background="@android:color/white">
 
     <ImageView
-        android:id="@+id/imgProduct"
+        android:id="@+id/d_imgProduct"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:scaleType="fitCenter"
@@ -22,7 +22,7 @@
         android:layout_gravity="center">
 
         <TextView
-            android:id="@+id/txtProductName"
+            android:id="@+id/d_txtProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tên sản phẩm"
@@ -30,7 +30,7 @@
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/txtProductDescription"
+            android:id="@+id/d_txtProductDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mô tả sản phẩm"
@@ -39,7 +39,7 @@
             android:ellipsize="end"/>
 
         <TextView
-            android:id="@+id/txtQuantity"
+            android:id="@+id/d_txtQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Số lượng: 1"
@@ -63,7 +63,7 @@
         android:textColor="@android:color/holo_red_dark" />
 
         <TextView
-        android:id="@+id/txtProductTotalPrice"
+        android:id="@+id/d_txtProductTotalPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1.450.000 VNĐ"

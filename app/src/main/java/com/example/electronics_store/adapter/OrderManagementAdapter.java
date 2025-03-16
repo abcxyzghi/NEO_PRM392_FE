@@ -45,11 +45,12 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OrderResponse order = orderList.get(position);
-        holder.txtOrderId.setText("Mã đơn: " + order.getId());
-        holder.txtUserId.setText("Mã khách: " + order.getUserId());
-        holder.txtTotalPrice.setText("Tổng tiền: " + order.getTotalPrice() + " VNĐ");
-        holder.txtStatus.setText("Trạng thái: " + order.getStatus());
-        holder.txtCreatedAt.setText("Ngày tạo: " + order.getCreatedAt());
+//        holder.txtOrderId.setText("Mã đơn: " + order.getId());
+//        holder.txtUserId.setText("Mã khách: " + order.getUserId());
+//        holder.txtTotalPrice.setText("Tổng tiền: " + order.getTotalPrice() + " VNĐ");
+//        holder.txtStatus.setText("Trạng thái: " + order.getStatus());
+//        holder.txtCreatedAt.setText("Ngày tạo: " + order.getCreatedAt());
+        holder.bind(order, listener);
     }
 
     @Override
@@ -67,6 +68,20 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
             txtTotalPrice = itemView.findViewById(R.id.Order_txtTotalPrice);
             txtStatus = itemView.findViewById(R.id.Order_txtStatus);
             txtCreatedAt = itemView.findViewById(R.id.Order_txtCreatedDate);
+        }
+
+        public void bind(OrderResponse order, OnItemClickListener listener) {
+            txtOrderId.setText("Mã đơn: " + order.getId());
+            txtUserId.setText("Mã khách: " + order.getUserId());
+            txtTotalPrice.setText("Tổng tiền: " + order.getTotalPrice() + " VNĐ");
+            txtStatus.setText("Trạng thái: " + order.getStatus());
+            txtCreatedAt.setText("Ngày tạo: " + order.getCreatedAt());
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onItemClick(order);
+                }
+            });
         }
     }
 }

@@ -72,14 +72,14 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
 
         fetchOrders();
 
-        orderAdapter.setOnItemClickListener(order -> {
-            Intent intent = new Intent(OrderManagementActivity.this, OrderDetailActivity.class);
-            intent.putExtra("order_id", order.getId());
-            intent.putExtra("order_status", order.getStatus());
-            intent.putExtra("order_price", order.getTotalPrice());
-            intent.putExtra("order_user_id", order.getUserId());
-            startActivity(intent);
-        });
+//        orderAdapter.setOnItemClickListener(order -> {
+//            Intent intent = new Intent(OrderManagementActivity.this, OrderDetailActivity.class);
+//            intent.putExtra("order_id", order.getId());
+//            intent.putExtra("order_status", order.getStatus());
+//            intent.putExtra("order_price", order.getTotalPrice());
+//            intent.putExtra("order_user_id", order.getUserId());
+//            startActivity(intent);
+//        });
 
         btnSearchOrder.setOnClickListener(v -> {
             String query = edtSearchOrder.getText().toString().trim();
@@ -99,8 +99,18 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
             @Override
             public void onResponse(@NonNull Call<List<OrderResponse>> call, @NonNull Response<List<OrderResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    orderAdapter.setOrderList(response.body());
                     allOrders = response.body();
+                    orderAdapter.setOrderList(allOrders);
+
+                    // Đảm bảo gán lại sự kiện click sau khi cập nhật dữ liệu
+                    orderAdapter.setOnItemClickListener(order -> {
+                        Intent intent = new Intent(OrderManagementActivity.this, OrderDetailActivity.class);
+                        intent.putExtra("order_id", order.getId());
+                        intent.putExtra("order_status", order.getStatus());
+                        intent.putExtra("order_price", order.getTotalPrice());
+                        intent.putExtra("order_user_id", order.getUserId());
+                        startActivity(intent);
+                    });
                 } else {
                     Toast.makeText(OrderManagementActivity.this, "Lỗi khi tải danh sách đơn hàng", Toast.LENGTH_SHORT).show();
                 }
@@ -112,6 +122,7 @@ public class OrderManagementActivity extends AppCompatActivity implements Naviga
             }
         });
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

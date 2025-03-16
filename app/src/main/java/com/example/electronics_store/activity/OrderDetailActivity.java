@@ -2,6 +2,7 @@ package com.example.electronics_store.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ import com.example.electronics_store.model.OrderDetail;
 import com.example.electronics_store.retrofit.ApiService;
 import com.example.electronics_store.retrofit.OrderResponse;
 import com.example.electronics_store.retrofit.RetrofitClient;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,13 +63,11 @@ public class OrderDetailActivity extends AppCompatActivity {
         String statusI = getIntent().getStringExtra("order_status");
         Double price = getIntent().getDoubleExtra("order_price", -1);
 
-        orderId.setText(orderIdI);
-        userId.setText(userIdI);
+        orderId.setText("OrderID: " + String.valueOf(orderIdI));
+        userId.setText("UserID: " + String.valueOf(userIdI));
         status.setText(statusI);
-        totalPrice.setText("" + price);
-        if (orderIdI != -1) {
-            fetchOrderDetails(orderIdI);
-        }
+        totalPrice.setText(Double.toString(price));
+        fetchOrderDetails(orderIdI);
     }
 
     private void fetchOrderDetails(int orderId) {
@@ -78,10 +78,20 @@ public class OrderDetailActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<OrderResponse> call, @NonNull Response<OrderResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    orderDetailList = response.body().getOrderDetails();
-                    orderDetailAdapter.setOrderDetailList(orderDetailList);
+                    Log.d("API Response", new Gson().toJson(response.body()));
+
+                    if (response.body().getOrderDetails() != null) {
+                        orderDetailList.clear();
+                        orderDetailList.addAll(response.body().getOrderDetails());
+                        orderDetailAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.e("ERROR", "orderDetails is null!");
+                    }
+                } else {
+                    Log.e("ERROR", "API call failed!");
                 }
             }
+
 
             @Override
             public void onFailure(@NonNull Call<OrderResponse> call, @NonNull Throwable t) {
