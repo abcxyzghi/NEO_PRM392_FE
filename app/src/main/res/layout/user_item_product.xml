@@ -55,8 +55,9 @@
             android:textColor="@android:color/holo_red_dark"
             android:paddingTop="4dp"/>
 
-        <!-- Nút thao tác -->
+        <!-- Layout chứa nút hành động -->
         <LinearLayout
+            android:id="@+id/actionLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -79,7 +80,6 @@
                     android:layout_height="24dp"
                     android:src="@drawable/cart"
                     android:background="@null"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -96,7 +96,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/favorite_like"
-                    android:background="@null" />
+                    android:background="@null"/>
             </LinearLayout>
 
         </LinearLayout>
