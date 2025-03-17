@@ -12,7 +12,11 @@ public class UpdateProfileRequest {
         this.avatar = avatar;
         this.gender = gender;
     }
-
+    public UpdateProfileRequest(String name, String phone, String gender) {
+        this.name = name;
+        this.phoneNumber = phone;
+        this.gender = gender;
+    }
     public String getName() {
         return name;
     }

@@ -106,4 +106,9 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body ChangePasswordRequest request
     );
+    @PATCH("/auth/update-profile")
+    Call<UpdateProfileResponse> updateProfile(
+            @Header("Authorization") String token,
+            @Body UpdateProfileRequest request
+    );
 }

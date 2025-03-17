@@ -43,6 +43,7 @@
             android:name=".activity.ProductManagementActivity"
             android:exported="false" />
 
+
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
@@ -71,6 +72,7 @@
         <activity android:name=".activity.FavoriteActivity"/>
         <activity android:name=".activity.PaymentActivity"/>
         <activity android:name=".activity.NotificationActivity"/>
+        <activity android:name=".activity.ProfileActivity" />
         <activity
             android:name=".activity.AdminActivity"
             android:exported="false" />
