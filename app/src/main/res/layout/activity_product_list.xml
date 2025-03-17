@@ -12,13 +12,26 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Banner quảng cáo -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/bannerViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:clipToPadding="false"
+            android:clipChildren="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:overScrollMode="never"
+            android:layout_marginBottom="16dp"/> <!-- Khoảng cách phía dưới -->
+
         <!-- Thanh tìm kiếm -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="6dp"
             app:cardCornerRadius="12dp"
-            android:backgroundTint="#FFFFFF">
+            android:backgroundTint="#FFFFFF"
+            android:layout_marginTop="16dp"> <!-- Khoảng cách phía trên -->
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
@@ -28,6 +41,7 @@
                 android:background="@android:color/transparent"
                 android:iconifiedByDefault="false"/>
         </androidx.cardview.widget.CardView>
+
 
         <!-- Thanh icon Giỏ hàng và Yêu thích -->
         <LinearLayout
@@ -135,7 +149,7 @@
             android:id="@+id/btnFilter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Áp dụng bộ lọc"
+            android:text="Áp dụng"
             android:backgroundTint="#6200EE"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

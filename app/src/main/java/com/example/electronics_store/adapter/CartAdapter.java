@@ -8,13 +8,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.electronics_store.R;
-import com.example.electronics_store.retrofit.CartUtils;
 import com.example.electronics_store.retrofit.ProductResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
@@ -23,18 +24,18 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     private OnCartUpdateListener cartUpdateListener;
     private OnQuantityChangeListener quantityChangeListener;
 
-    // Interface cho callback xóa sản phẩm
+    // Interface callback khi xóa sản phẩm
     public interface OnCartUpdateListener {
         void onItemRemove(int position);
     }
 
-    // Interface cho callback tăng/giảm số lượng
+    // Interface callback khi thay đổi số lượng
     public interface OnQuantityChangeListener {
         void onQuantityChange(int position, int newQuantity);
     }
 
     public CartAdapter(List<ProductResponse> cartList, Context context, OnCartUpdateListener cartUpdateListener, OnQuantityChangeListener quantityChangeListener) {
-        this.cartList = cartList;
+        this.cartList = new ArrayList<>(cartList); // Sao chép để tránh thay đổi ngoài ý muốn
         this.context = context;
         this.cartUpdateListener = cartUpdateListener;
         this.quantityChangeListener = quantityChangeListener;
@@ -57,25 +58,29 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
         Glide.with(context).load(product.getImageUrl()).into(holder.productImage);
 
-        // Xóa sản phẩm
+        // Xử lý xóa sản phẩm khỏi giỏ hàng
         holder.btnDelete.setOnClickListener(v -> {
             if (cartUpdateListener != null) {
                 cartUpdateListener.onItemRemove(position);
             }
         });
 
-        // Nút tăng số lượng
+        // Xử lý tăng số lượng
         holder.btnIncrease.setOnClickListener(v -> {
             int newQuantity = product.getQuantity() + 1;
+            product.setQuantity(newQuantity);
+            notifyItemChanged(position); // Cập nhật UI ngay lập tức
             if (quantityChangeListener != null) {
                 quantityChangeListener.onQuantityChange(position, newQuantity);
             }
         });
 
-        // Nút giảm số lượng
+        // Xử lý giảm số lượng
         holder.btnDecrease.setOnClickListener(v -> {
             if (product.getQuantity() > 1) {
                 int newQuantity = product.getQuantity() - 1;
+                product.setQuantity(newQuantity);
+                notifyItemChanged(position); // Cập nhật UI ngay lập tức
                 if (quantityChangeListener != null) {
                     quantityChangeListener.onQuantityChange(position, newQuantity);
                 }
@@ -88,9 +93,33 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         return cartList.size();
     }
 
+    // Cập nhật danh sách sản phẩm bằng DiffUtil để tăng hiệu suất
     public void updateData(List<ProductResponse> newCartList) {
-        cartList = newCartList;
-        notifyDataSetChanged();
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return cartList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newCartList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                return cartList.get(oldItemPosition).getId() == newCartList.get(newItemPosition).getId();
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                return cartList.get(oldItemPosition).equals(newCartList.get(newItemPosition));
+            }
+        });
+
+        cartList.clear();
+        cartList.addAll(newCartList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

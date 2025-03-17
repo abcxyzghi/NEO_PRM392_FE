@@ -24,6 +24,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.electronics_store.R;
 import com.example.electronics_store.adapter.CartItemAdapter;
 import com.example.electronics_store.retrofit.ApiService;
+import com.example.electronics_store.retrofit.CartUtils;
 import com.example.electronics_store.retrofit.OrderRequest;
 import com.example.electronics_store.retrofit.OrderResponse;
 import com.example.electronics_store.retrofit.ProductResponse;
@@ -85,8 +86,28 @@ public class PaymentActivity extends AppCompatActivity {
         String customerAddress = address.getText().toString().trim();
         int selectedId = paymentOptions.getCheckedRadioButtonId();
 
-        if (customerName.isEmpty() || phone.isEmpty() || customerEmail.isEmpty() || customerAddress.isEmpty() || selectedId == -1) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin và chọn phương thức thanh toán", Toast.LENGTH_LONG).show();
+        if (!isValidName(customerName)) {
+            Toast.makeText(this, "Tên không hợp lệ. Không được chứa số hoặc ký tự đặc biệt!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!isValidPhone(phone)) {
+            Toast.makeText(this, "Số điện thoại phải có 10 số và bắt đầu bằng 0!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!isValidEmail(customerEmail)) {
+            Toast.makeText(this, "Email phải là @gmail.com!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (customerAddress.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập địa chỉ!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (selectedId == -1) {
+            Toast.makeText(this, "Vui lòng chọn phương thức thanh toán!", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -99,6 +120,21 @@ public class PaymentActivity extends AppCompatActivity {
         } else if (paymentMethod.equals("ZALOPAY")) {
             processZaloPayPayment(totalAmount);
         }
+    }
+
+    // Kiểm tra tên khách hàng (chỉ cho phép chữ cái và khoảng trắng)
+    private boolean isValidName(String name) {
+        return name.matches("^[\\p{L} ]+$");
+    }
+
+    // Kiểm tra số điện thoại (10 số, bắt đầu bằng 0)
+    private boolean isValidPhone(String phone) {
+        return phone.matches("^0\\d{9}$");
+    }
+
+    // Kiểm tra email (phải có @gmail.com)
+    private boolean isValidEmail(String email) {
+        return email.matches("^[a-zA-Z0-9._%+-]+@gmail\\.com$");
     }
 
     private void createOrder(String paymentMethod) {
@@ -117,9 +153,10 @@ public class PaymentActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     saveOrderNotification("Đơn hàng của bạn đã được đặt thành công!");
                     showOrderNotification();
+                    CartUtils.clearCart(PaymentActivity.this); // Xóa giỏ hàng sau khi thanh toán thành công
                     navigateToProductList();
                 } else {
-                    Toast.makeText(PaymentActivity.this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PaymentActivity.this, "Số lượng sản phẩm không đủ!!!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -151,7 +188,10 @@ public class PaymentActivity extends AppCompatActivity {
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(paymentUrl));
                         startActivity(intent);
 
-                        new Handler(Looper.getMainLooper()).postDelayed(() -> navigateToProductList(), 5000);
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            CartUtils.clearCart(PaymentActivity.this); // Xóa giỏ hàng sau khi thanh toán thành công
+                            navigateToProductList();
+                        }, 5000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -212,21 +252,5 @@ public class PaymentActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("lastOrderNotification", message);
         editor.apply();
-    }
-
-    private void sendOrderConfirmationEmail(String recipientEmail, String name, String address, String paymentMethod) {
-        String subject = "Xác nhận đơn hàng từ Electronics Store";
-        String message = "Xin chào " + name + ",\n\n" +
-                "Cảm ơn bạn đã đặt hàng tại Electronics Store.\n\n" +
-                "Thông tin đơn hàng:\n" +
-                "Tên: " + name + "\n" +
-                "Địa chỉ: " + address + "\n" +
-                "Phương thức thanh toán: " + paymentMethod + "\n\n" +
-                "Chúng tôi sẽ sớm xử lý đơn hàng của bạn.\n\n" +
-                "Trân trọng,\nElectronics Store Team";
-        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + recipientEmail));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, message);
-        startActivity(Intent.createChooser(emailIntent, "Gửi email..."));
     }
 }
