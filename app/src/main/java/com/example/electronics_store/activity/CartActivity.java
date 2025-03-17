@@ -101,15 +101,20 @@ public class CartActivity extends AppCompatActivity {
         ProductResponse product = cartList.get(position);
         if (product.getQuantity() > 1) {
             product.setQuantity(product.getQuantity() - 1);
+            cartAdapter.notifyItemChanged(position); // Chỉ cập nhật item này
         } else {
             cartList.remove(position);
+            cartAdapter.notifyItemRemoved(position); // Xóa item khỏi danh sách hiển thị
         }
 
-        CartUtils.saveCartList(this, cartList);
-        cartAdapter.updateData(cartList);
-        updateTotalPrice();
-        Toast.makeText(this, "Đã cập nhật giỏ hàng", Toast.LENGTH_SHORT).show();
+        // Chạy cập nhật giỏ hàng trên UI Thread để tránh lag
+        new Handler(Looper.getMainLooper()).post(() -> {
+            CartUtils.saveCartList(this, cartList);
+            updateTotalPrice();
+            Toast.makeText(this, "Đã cập nhật giỏ hàng", Toast.LENGTH_SHORT).show();
+        });
     }
+
 
     private void updateItemQuantity(int position, int newQuantity) {
         if (position < 0 || position >= cartList.size() || newQuantity < 1) return;

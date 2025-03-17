@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/productImage"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:background="@android:color/darker_gray"/>
 
@@ -61,26 +61,47 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:paddingTop="8dp">
+            android:layout_marginTop="8dp"
+            android:padding="4dp">
 
-            <Button
-                android:id="@+id/btnAddToCart"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Thêm vào giỏ"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:textColor="@android:color/white"/>
+                android:gravity="center"
+                android:background="@drawable/rounded_button"
+                android:layout_marginEnd="4dp"
+                android:padding="8dp">
 
-            <Button
-                android:id="@+id/btnAddToWishlist"
+                <ImageButton
+                    android:id="@+id/btnAddToCart"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/cart"
+                    android:background="@null"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Yêu thích"
-                android:backgroundTint="@android:color/holo_red_light"
-                android:textColor="@android:color/white"/>
+                android:gravity="center"
+                android:background="@drawable/rounded_button"
+                android:layout_marginStart="4dp"
+                android:padding="8dp">
+
+                <ImageButton
+                    android:id="@+id/btnAddToWishlist"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/favorite_like"
+                    android:background="@null" />
+            </LinearLayout>
+
         </LinearLayout>
+
+
 
         <!-- Nút Xóa khỏi yêu thích -->
         <Button

@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -48,7 +48,7 @@ public class ProductListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
 
-        // Initialize views
+        // Khởi tạo View
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);
         spinnerCategory = findViewById(R.id.spinnerCategory);
@@ -61,47 +61,35 @@ public class ProductListActivity extends AppCompatActivity {
         btnNotification = findViewById(R.id.btnNotification);
         bannerViewPager = findViewById(R.id.bannerViewPager);
 
-        // Initialize banner carousel
-        initializeBanner();
+        // Thiết lập RecyclerView với GridLayoutManager (2 cột)
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        // Handle notification intent
-        Intent notificationIntent = getIntent();
-        if (notificationIntent != null && notificationIntent.getData() != null) {
-            String action = notificationIntent.getData().getHost();
-            if ("payment_success".equals(action)) {
-                Toast.makeText(this, "Thanh toán thành công! Quay về trang sản phẩm.", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        // Set up RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         apiService = RetrofitClient.getClient().create(ApiService.class);
 
-        // Set up Spinner and load categories
+        // Thiết lập banner
+        initializeBanner();
+
+        // Xử lý khi có thông báo từ Intent
+        handleNotificationIntent();
+
+        // Cài đặt Spinner và tải danh mục sản phẩm
         setupSortSpinner();
         loadCategories();
 
-        // Fetch products
+        // Lấy danh sách sản phẩm ban đầu
         fetchProducts(null, null, null, "DESC", null);
 
-        // Set up search view
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                fetchProducts(null, null, null, getSortDirection(), query);
-                return true;
-            }
+        // Xử lý tìm kiếm
+        setupSearchView();
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-        // Set up filter button
+        // Xử lý nút lọc
         btnFilter.setOnClickListener(view -> applyFilters());
 
-        // Set up navigation buttons
+        // Xử lý các nút điều hướng
+        setupNavigationButtons();
+    }
+
+    private void setupNavigationButtons() {
         btnCart.setOnClickListener(v -> {
             Intent intent = new Intent(ProductListActivity.this, CartActivity.class);
             startActivity(intent);
@@ -112,22 +100,12 @@ public class ProductListActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        if (btnNotification != null) {
-            btnNotification.setOnClickListener(v -> {
-                Intent intent = new Intent(ProductListActivity.this, NotificationActivity.class);
-                startActivity(intent);
-            });
-        } else {
-            Log.e("ProductListActivity", "btnNotification is null!");
-        }
-
-        // Change search view text color
-        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-        if (searchEditText != null) {
-            searchEditText.setTextColor(getResources().getColor(android.R.color.black));
-            searchEditText.setHintTextColor(getResources().getColor(android.R.color.darker_gray));
-        }
+        btnNotification.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductListActivity.this, NotificationActivity.class);
+            startActivity(intent);
+        });
     }
+
 
     private void initializeBanner() {
         bannerList = Arrays.asList(
@@ -139,29 +117,24 @@ public class ProductListActivity extends AppCompatActivity {
         bannerAdapter = new BannerAdapter(this, bannerList);
         bannerViewPager.setAdapter(bannerAdapter);
 
-        // Auto-scroll banner
-        bannerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                int nextItem = (bannerViewPager.getCurrentItem() + 1) % bannerList.size();
-                bannerViewPager.setCurrentItem(nextItem, true);
-                handler.postDelayed(this, 3000);
-            }
+        // Tự động chuyển banner
+        bannerRunnable = () -> {
+            int nextItem = (bannerViewPager.getCurrentItem() + 1) % bannerList.size();
+            bannerViewPager.setCurrentItem(nextItem, true);
+            handler.postDelayed(bannerRunnable, 3000);
         };
 
         handler.postDelayed(bannerRunnable, 3000);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        handler.postDelayed(bannerRunnable, 3000);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        handler.removeCallbacks(bannerRunnable);
+    private void handleNotificationIntent() {
+        Intent notificationIntent = getIntent();
+        if (notificationIntent != null && notificationIntent.getData() != null) {
+            String action = notificationIntent.getData().getHost();
+            if ("payment_success".equals(action)) {
+                Toast.makeText(this, "Thanh toán thành công! Quay về trang sản phẩm.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void setupSortSpinner() {
@@ -180,6 +153,14 @@ public class ProductListActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) {}
         });
     }
+
+    private String getSortDirection() {
+        if (spinnerSort.getSelectedItem() != null) {
+            return spinnerSort.getSelectedItemPosition() == 0 ? "ASC" : "DESC";
+        }
+        return "DESC"; // Giá trị mặc định nếu spinner chưa được chọn
+    }
+
 
     private void loadCategories() {
         apiService.getCategories().enqueue(new Callback<List<CategoryResponse>>() {
@@ -218,8 +199,19 @@ public class ProductListActivity extends AppCompatActivity {
         fetchProducts(categoryId, min, max, getSortDirection(), searchView.getQuery().toString());
     }
 
-    private String getSortDirection() {
-        return spinnerSort.getSelectedItemPosition() == 0 ? "ASC" : "DESC";
+    private void setupSearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                fetchProducts(null, null, null, getSortDirection(), query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     private void fetchProducts(Integer categoryId, Double minPrice, Double maxPrice, String sortDirection, String searchQuery) {
@@ -229,6 +221,7 @@ public class ProductListActivity extends AppCompatActivity {
                     public void onResponse(Call<List<ProductResponse>> call, Response<List<ProductResponse>> response) {
                         if (response.isSuccessful() && response.body() != null) {
                             userProductAdapter = new UserProductAdapter(ProductListActivity.this, response.body(), false);
+                            recyclerView.setLayoutManager(new GridLayoutManager(ProductListActivity.this, 2)); // Lưới 2 cột
                             recyclerView.setAdapter(userProductAdapter);
                         }
                     }
