@@ -85,6 +85,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         } else {
             productImage.setImageResource(R.drawable.bug_report);
         }
+        // Kiểm tra tồn kho và cập nhật giao diện
+        if (product.getStock() == 0) {
+            btnAddToCart.setEnabled(false);
+            btnAddToCart.setText("Hết hàng");
+        } else {
+            btnAddToCart.setEnabled(true);
+            btnAddToCart.setText("Thêm vào giỏ hàng");
+        }
     }
 
     private void setupButtons(ProductResponse product) {
