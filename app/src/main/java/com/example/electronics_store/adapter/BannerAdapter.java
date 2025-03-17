@@ -8,17 +8,19 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.electronics_store.R;
 
 import java.util.List;
 
 public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerViewHolder> {
     private Context context;
-    private List<Integer> bannerImages;
+    private List<String> bannerList;
 
-    public BannerAdapter(Context context, List<Integer> bannerImages) {
+    public BannerAdapter(Context context, List<String> bannerList) {
         this.context = context;
-        this.bannerImages = bannerImages;
+        this.bannerList = bannerList;
     }
 
     @NonNull
@@ -30,20 +32,21 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
 
     @Override
     public void onBindViewHolder(@NonNull BannerViewHolder holder, int position) {
-        holder.imageView.setImageResource(bannerImages.get(position));
+        String imageUrl = bannerList.get(position);
+        Glide.with(context).load(imageUrl).into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return bannerImages.size();
+        return bannerList.size();
     }
 
-    static class BannerViewHolder extends RecyclerView.ViewHolder {
+    public static class BannerViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
         public BannerViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.bannerImage);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 }

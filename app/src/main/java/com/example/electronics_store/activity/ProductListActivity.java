@@ -2,6 +2,8 @@ package com.example.electronics_store.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -9,11 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.electronics_store.R;
+import com.example.electronics_store.adapter.BannerAdapter;
 import com.example.electronics_store.adapter.UserProductAdapter;
 import com.example.electronics_store.retrofit.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,18 +37,18 @@ public class ProductListActivity extends AppCompatActivity {
     private List<CategoryResponse> categoryList;
     private ImageButton btnCart, btnFavorite, btnNotification;
 
+    private ViewPager2 bannerViewPager;
+    private BannerAdapter bannerAdapter;
+    private List<String> bannerList;
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable bannerRunnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
-        Intent notificationIntent = getIntent();
-        if (notificationIntent != null && notificationIntent.getData() != null) {
-            String action = notificationIntent.getData().getHost();
-            if ("payment_success".equals(action)) {
-                Toast.makeText(this, "Thanh toán thành công! Quay về trang sản phẩm.", Toast.LENGTH_SHORT).show();
-            }
-        }
-        // Ánh xạ view
+
+        // Initialize views
         searchView = findViewById(R.id.searchView);
         recyclerView = findViewById(R.id.recyclerView);
         spinnerCategory = findViewById(R.id.spinnerCategory);
@@ -54,48 +59,32 @@ public class ProductListActivity extends AppCompatActivity {
         btnCart = findViewById(R.id.btnCart);
         btnFavorite = findViewById(R.id.btnFavorite);
         btnNotification = findViewById(R.id.btnNotification);
+        bannerViewPager = findViewById(R.id.bannerViewPager);
 
-        // Kiểm tra null trước khi gán sự kiện
-        if (btnNotification == null) {
-            Log.e("ProductListActivity", "btnNotification is null!");
-        } else {
-            btnNotification.setOnClickListener(v -> {
-                Intent intent = new Intent(ProductListActivity.this, NotificationActivity.class);
-                startActivity(intent);
-            });
+        // Initialize banner carousel
+        initializeBanner();
+
+        // Handle notification intent
+        Intent notificationIntent = getIntent();
+        if (notificationIntent != null && notificationIntent.getData() != null) {
+            String action = notificationIntent.getData().getHost();
+            if ("payment_success".equals(action)) {
+                Toast.makeText(this, "Thanh toán thành công! Quay về trang sản phẩm.", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        // Đổi màu chữ nhập và hint trong SearchView
-        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
-        if (searchEditText != null) {
-            searchEditText.setTextColor(getResources().getColor(android.R.color.black));
-            searchEditText.setHintTextColor(getResources().getColor(android.R.color.darker_gray));
-        }
-
-        // Chuyển đến màn hình giỏ hàng
-        btnCart.setOnClickListener(v -> {
-            Intent intent = new Intent(ProductListActivity.this, CartActivity.class);
-            startActivity(intent);
-        });
-
-        // Chuyển đến màn hình yêu thích
-        btnFavorite.setOnClickListener(v -> {
-            Intent intent = new Intent(ProductListActivity.this, FavoriteActivity.class);
-            startActivity(intent);
-        });
-
-        // Cấu hình RecyclerView
+        // Set up RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         apiService = RetrofitClient.getClient().create(ApiService.class);
 
-        // Thiết lập Spinner sắp xếp và tải danh mục
+        // Set up Spinner and load categories
         setupSortSpinner();
         loadCategories();
 
-        // Lấy danh sách sản phẩm
+        // Fetch products
         fetchProducts(null, null, null, "DESC", null);
 
-        // Lắng nghe sự kiện tìm kiếm
+        // Set up search view
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -109,8 +98,70 @@ public class ProductListActivity extends AppCompatActivity {
             }
         });
 
-        // Lắng nghe sự kiện lọc sản phẩm
+        // Set up filter button
         btnFilter.setOnClickListener(view -> applyFilters());
+
+        // Set up navigation buttons
+        btnCart.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductListActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
+
+        btnFavorite.setOnClickListener(v -> {
+            Intent intent = new Intent(ProductListActivity.this, FavoriteActivity.class);
+            startActivity(intent);
+        });
+
+        if (btnNotification != null) {
+            btnNotification.setOnClickListener(v -> {
+                Intent intent = new Intent(ProductListActivity.this, NotificationActivity.class);
+                startActivity(intent);
+            });
+        } else {
+            Log.e("ProductListActivity", "btnNotification is null!");
+        }
+
+        // Change search view text color
+        EditText searchEditText = searchView.findViewById(androidx.appcompat.R.id.search_src_text);
+        if (searchEditText != null) {
+            searchEditText.setTextColor(getResources().getColor(android.R.color.black));
+            searchEditText.setHintTextColor(getResources().getColor(android.R.color.darker_gray));
+        }
+    }
+
+    private void initializeBanner() {
+        bannerList = Arrays.asList(
+                "https://th.bing.com/th/id/OIP.ng6GrR09uCxfwX4OTZYY_QHaDC?rs=1&pid=ImgDetMain",
+                "https://th.bing.com/th/id/OIP.4fxHY-leAvBN4saDO7ng3AHaCL?w=1200&h=353&rs=1&pid=ImgDetMain",
+                "https://cdn.tgdd.vn/2022/03/banner/830-300-830x300-23.png"
+        );
+
+        bannerAdapter = new BannerAdapter(this, bannerList);
+        bannerViewPager.setAdapter(bannerAdapter);
+
+        // Auto-scroll banner
+        bannerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                int nextItem = (bannerViewPager.getCurrentItem() + 1) % bannerList.size();
+                bannerViewPager.setCurrentItem(nextItem, true);
+                handler.postDelayed(this, 3000);
+            }
+        };
+
+        handler.postDelayed(bannerRunnable, 3000);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handler.postDelayed(bannerRunnable, 3000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacks(bannerRunnable);
     }
 
     private void setupSortSpinner() {

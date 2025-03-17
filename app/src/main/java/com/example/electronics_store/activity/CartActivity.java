@@ -1,11 +1,16 @@
 package com.example.electronics_store.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +19,6 @@ import com.example.electronics_store.R;
 import com.example.electronics_store.adapter.CartAdapter;
 import com.example.electronics_store.retrofit.CartUtils;
 import com.example.electronics_store.retrofit.ProductResponse;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +28,8 @@ public class CartActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private TextView totalPriceText;
-    private Button btnContinueShopping;
-    private Button continue_button;
-    private List<ProductResponse> cartList;
+    private Button btnContinueShopping, continueButton;
+    private List<ProductResponse> cartList = new ArrayList<>();
     private CartAdapter cartAdapter;
 
     @Override
@@ -34,66 +37,62 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cart_activity);
 
-        // Ánh xạ View
         recyclerView = findViewById(R.id.recyclerview);
         totalPriceText = findViewById(R.id.total_price_text);
         btnContinueShopping = findViewById(R.id.btn_continue_shopping);
-        continue_button = findViewById(R.id.continue_button); // ⚠️ Thêm dòng này!
+        continueButton = findViewById(R.id.continue_button);
 
-        // Kiểm tra nếu continue_button bị null
-        if (continue_button == null) {
+        if (continueButton == null) {
             Toast.makeText(this, "Lỗi: Không tìm thấy continue_button", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Thiết lập RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Tải dữ liệu giỏ hàng
         loadCartData();
 
-        // Khởi tạo Adapter với callback
         cartAdapter = new CartAdapter(cartList, this, this::removeItemFromCart, this::updateItemQuantity);
         recyclerView.setAdapter(cartAdapter);
-
-        // Cập nhật tổng tiền
         updateTotalPrice();
 
-        // Nút "Tiếp tục mua sắm"
         btnContinueShopping.setOnClickListener(v -> {
             startActivity(new Intent(CartActivity.this, ProductListActivity.class));
             finish();
         });
 
-        continue_button.setOnClickListener(v -> {
+        continueButton.setOnClickListener(v -> {
+            if (cartList.isEmpty()) {
+                Toast.makeText(this, "Giỏ hàng trống!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(CartActivity.this, PaymentActivity.class);
             intent.putParcelableArrayListExtra("cartItems", new ArrayList<>(cartList));
             startActivity(intent);
         });
-
     }
-
 
     private void loadCartData() {
         List<ProductResponse> originalCartList = CartUtils.getCartList(this);
         if (originalCartList == null || originalCartList.isEmpty()) {
-            cartList = new ArrayList<>();
+            cartList.clear();
             return;
         }
 
         Map<Integer, ProductResponse> groupedCartMap = new HashMap<>();
-
         for (ProductResponse product : originalCartList) {
             if (groupedCartMap.containsKey(product.getId())) {
-                groupedCartMap.get(product.getId()).setQuantity(groupedCartMap.get(product.getId()).getQuantity() + 1);
+                ProductResponse existingProduct = groupedCartMap.get(product.getId());
+                existingProduct.setQuantity(existingProduct.getQuantity() + product.getQuantity());
             } else {
-                product.setQuantity(1);
                 groupedCartMap.put(product.getId(), product);
             }
         }
 
-        cartList = new ArrayList<>(groupedCartMap.values());
-        CartUtils.saveCartList(this, cartList);
+        List<ProductResponse> newCartList = new ArrayList<>(groupedCartMap.values());
+        if (!cartList.equals(newCartList)) {
+            cartList.clear();
+            cartList.addAll(newCartList);
+            CartUtils.saveCartList(this, cartList);
+        }
     }
 
     private void removeItemFromCart(int position) {
@@ -109,7 +108,6 @@ public class CartActivity extends AppCompatActivity {
         CartUtils.saveCartList(this, cartList);
         cartAdapter.updateData(cartList);
         updateTotalPrice();
-
         Toast.makeText(this, "Đã cập nhật giỏ hàng", Toast.LENGTH_SHORT).show();
     }
 
@@ -128,5 +126,12 @@ public class CartActivity extends AppCompatActivity {
             total += product.getPrice() * product.getQuantity();
         }
         totalPriceText.setText(String.format("%.0fđ", total));
+    }
+
+    public static void clearCart(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("CartPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
     }
 }

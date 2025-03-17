@@ -84,6 +84,6 @@ public class CartUtils {
     // ✅ Xóa toàn bộ giỏ hàng
     public static void clearCart(Context context) {
         saveCartList(context, new ArrayList<>());
-        Toast.makeText(context, "Đã xóa toàn bộ giỏ hàng", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Bạn đã thanh toán thành công!!!", Toast.LENGTH_SHORT).show();
     }
 }
