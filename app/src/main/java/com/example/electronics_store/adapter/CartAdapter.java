@@ -120,6 +120,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         cartList.clear();
         cartList.addAll(newCartList);
         diffResult.dispatchUpdatesTo(this);
+
+        // Nếu vẫn lag, ép RecyclerView cập nhật lại toàn bộ
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -138,4 +141,5 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             btnDecrease = itemView.findViewById(R.id.btn_decrease);
         }
     }
+
 }

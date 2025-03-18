@@ -94,27 +94,24 @@ public class CartActivity extends AppCompatActivity {
             CartUtils.saveCartList(this, cartList);
         }
     }
-
     private void removeItemFromCart(int position) {
         if (position < 0 || position >= cartList.size()) return;
 
-        ProductResponse product = cartList.get(position);
+        List<ProductResponse> newCartList = new ArrayList<>(cartList); // Tạo danh sách mới
+        ProductResponse product = newCartList.get(position);
+
         if (product.getQuantity() > 1) {
             product.setQuantity(product.getQuantity() - 1);
-            cartAdapter.notifyItemChanged(position); // Chỉ cập nhật item này
+            cartAdapter.notifyItemChanged(position);
         } else {
-            cartList.remove(position);
-            cartAdapter.notifyItemRemoved(position); // Xóa item khỏi danh sách hiển thị
+            newCartList.remove(position);
+            cartAdapter.updateData(newCartList); // Cập nhật danh sách bằng DiffUtil
         }
 
-        // Chạy cập nhật giỏ hàng trên UI Thread để tránh lag
-        new Handler(Looper.getMainLooper()).post(() -> {
-            CartUtils.saveCartList(this, cartList);
-            updateTotalPrice();
-            Toast.makeText(this, "Đã cập nhật giỏ hàng", Toast.LENGTH_SHORT).show();
-        });
+        // Lưu dữ liệu & cập nhật giá tiền
+        CartUtils.saveCartList(this, newCartList);
+        updateTotalPrice();
     }
-
 
     private void updateItemQuantity(int position, int newQuantity) {
         if (position < 0 || position >= cartList.size() || newQuantity < 1) return;
