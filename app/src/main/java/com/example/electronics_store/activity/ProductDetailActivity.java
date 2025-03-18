@@ -170,8 +170,7 @@ public class ProductDetailActivity extends AppCompatActivity {
     }
 
     private void addToCart(ProductResponse product) {
-        // Logic thêm vào giỏ hàng (chưa triển khai)
-        // TODO: Implement cart functionality
+        CartUtils.addToCart(this, product);
     }
 
     private String formatPrice(double price) {
