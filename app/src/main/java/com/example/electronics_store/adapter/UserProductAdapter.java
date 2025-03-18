@@ -100,6 +100,8 @@ import java.util.List;
                         productStock.setText("Hết hàng");
                         productStock.setTextColor(Color.RED);
                         btnAddToCart.setVisibility(View.GONE);
+                        btnAddToWishlist.setVisibility(View.GONE);
+                        actionLayout.setVisibility(View.GONE);
                     } else {
                         productStock.setVisibility(View.GONE);
                         btnAddToCart.setVisibility(View.VISIBLE);
