@@ -73,6 +73,7 @@
         <activity android:name=".activity.PaymentActivity"/>
         <activity android:name=".activity.NotificationActivity"/>
         <activity android:name=".activity.ProfileActivity" />
+        <activity android:name=".activity.InfoActivity" />
         <activity
             android:name=".activity.AdminActivity"
             android:exported="false" />
@@ -90,7 +91,7 @@
             android:exported="true" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY_HERE" />
+            android:value="AIzaSyC2gjUDJ7hpOVHN9xGqe3_yUQbqc3J1QXU" />
     </application>
 
 </manifest>
