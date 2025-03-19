@@ -5,18 +5,27 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
+import androidx.core.view.GravityCompat;
 
 import com.example.electronics_store.R;
 import com.example.electronics_store.adapter.BannerAdapter;
 import com.example.electronics_store.adapter.UserProductAdapter;
 import com.example.electronics_store.retrofit.*;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductListActivity extends AppCompatActivity {
+public class ProductListActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView recyclerView;
     private UserProductAdapter userProductAdapter;
@@ -42,6 +51,8 @@ public class ProductListActivity extends AppCompatActivity {
     private List<String> bannerList;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable bannerRunnable;
+    private DrawerLayout drawerLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +71,20 @@ public class ProductListActivity extends AppCompatActivity {
         btnFavorite = findViewById(R.id.btnFavorite);
         btnNotification = findViewById(R.id.btnNotification);
         bannerViewPager = findViewById(R.id.bannerViewPager);
+
+        Toolbar toolbar = findViewById(R.id.user_toolbar);
+        setSupportActionBar(toolbar);
+
+        // Ánh xạ Navigation Drawer
+        drawerLayout = findViewById(R.id.user_drawer_layout);
+        NavigationView navigationView = findViewById(R.id.user_navigation_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        // Tạo nút mở menu
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
         // Thiết lập RecyclerView với GridLayoutManager (2 cột)
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -231,5 +256,35 @@ public class ProductListActivity extends AppCompatActivity {
                         Toast.makeText(ProductListActivity.this, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.nav_user_order_history) {
+            startActivity(new Intent(this, OrderHistoryActivity.class));
+        } else if (id == R.id.nav_user_update_profile) {
+            startActivity(new Intent(this, UpdateUserActivity.class));
+        } else if (id == R.id.nav_user_change_password) {
+            startActivity(new Intent(this, ChangePasswordActivity.class));
+        } else if (id == R.id.nav_user_store_location) {
+            startActivity(new Intent(this, InfoActivity.class));
+        } else if (id == R.id.nav_user_logout) {
+            logout(); // Đóng ứng dụng hoặc xử lý đăng xuất
+        }
+
+        drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    private void logout() {
+        RetrofitClient.setAuthToken(null);
+
+        Intent intent = new Intent(this, Login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
+        finish();
     }
 }
