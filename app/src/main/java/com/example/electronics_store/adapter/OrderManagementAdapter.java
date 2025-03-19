@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.electronics_store.Helper.DateUtils;
 import com.example.electronics_store.R;
 import com.example.electronics_store.retrofit.OrderResponse;
 
@@ -75,7 +76,7 @@ public class OrderManagementAdapter extends RecyclerView.Adapter<OrderManagement
             txtUserId.setText("Mã khách: " + order.getUserId());
             txtTotalPrice.setText("Tổng tiền: " + order.getTotalPrice() + " VNĐ");
             txtStatus.setText("Trạng thái: " + order.getStatus());
-            txtCreatedAt.setText("Ngày tạo: " + order.getCreatedAt());
+            txtCreatedAt.setText("Ngày tạo đơn: " + DateUtils.formatDate(order.getCreatedAt()));
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
