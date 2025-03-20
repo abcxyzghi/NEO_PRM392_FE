@@ -145,14 +145,14 @@ public class OrderHistoryActivity extends AppCompatActivity implements Navigatio
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_user_order_history) {
-            startActivity(new Intent(this, OrderHistoryActivity.class));
-        } else if (id == R.id.nav_user_update_profile) {
+        if (id == R.id.nav_user_update_profile) {
             startActivity(new Intent(this, UpdateUserActivity.class));
         } else if (id == R.id.nav_user_change_password) {
             startActivity(new Intent(this, ChangePasswordActivity.class));
         } else if (id == R.id.nav_user_store_location) {
             startActivity(new Intent(this, InfoActivity.class));
+        } else if (id == R.id.nav_user_product) {
+            startActivity(new Intent(this, ProductListActivity.class));
         } else if (id == R.id.nav_user_logout) {
             logout(); // Đóng ứng dụng hoặc xử lý đăng xuất
         }
