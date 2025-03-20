@@ -81,32 +81,32 @@ public class Login extends AppCompatActivity {
       final String emailTxt = email.getText().toString();
       final String passwordTxt = password.getText().toString();
       if (emailTxt.isEmpty() || passwordTxt.isEmpty()) {
-        Toast.makeText(Login.this, "Enter your email or password!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(Login.this, "Please enter both your email and password!!", Toast.LENGTH_SHORT).show();
       } else {
         loginWithApi(emailTxt, passwordTxt);
-        String emailKey = emailTxt.replace(".", ",");
-        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-          @Override
-          public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-            if (snapshot.hasChild(emailKey)) {
-              final String getPassword = snapshot.child(emailKey).child("password").getValue(String.class);
-              String role = snapshot.child(emailKey).child("role").getValue(String.class);
-              if (getPassword != null && getPassword.equals(passwordTxt)) {
-                Toast.makeText(Login.this, "Login successfully!!", Toast.LENGTH_SHORT).show();
-                redirectBasedOnRole(role);
-              } else {
-                Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
-              }
-            } else {
-              Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
-            }
-          }
-
-          @Override
-          public void onCancelled(@NonNull DatabaseError error) {
-            Toast.makeText(Login.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-          }
-        });
+//        String emailKey = emailTxt.replace(".", ",");
+//        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+//          @Override
+//          public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+//            if (snapshot.hasChild(emailKey)) {
+//              final String getPassword = snapshot.child(emailKey).child("password").getValue(String.class);
+//              String role = snapshot.child(emailKey).child("role").getValue(String.class);
+//              if (getPassword != null && getPassword.equals(passwordTxt)) {
+//                Toast.makeText(Login.this, "Login successfully!!", Toast.LENGTH_SHORT).show();
+//                redirectBasedOnRole(role);
+//              } else {
+//                Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
+//              }
+//            } else {
+//              Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
+//            }
+//          }
+//
+//          @Override
+//          public void onCancelled(@NonNull DatabaseError error) {
+//            Toast.makeText(Login.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+//          }
+//        });
       }
     });
 
@@ -132,9 +132,10 @@ public class Login extends AppCompatActivity {
           }
           String role = decodeJwtRole(token);
           redirectBasedOnRole(role);
-          Toast.makeText(Login.this, "Login successful", Toast.LENGTH_SHORT).show();
+          Toast.makeText(Login.this, "Login successfully!!", Toast.LENGTH_SHORT).show();
         } else {
-          Toast.makeText(Login.this, "Login failed: " + response.message(), Toast.LENGTH_SHORT).show();
+          Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
+          Log.e("LOGIN_FAILED", response.message());
         }
       }
 
