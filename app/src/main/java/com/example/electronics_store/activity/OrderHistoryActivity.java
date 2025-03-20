@@ -44,7 +44,6 @@ public class OrderHistoryActivity extends AppCompatActivity implements Navigatio
     private List<OrderResponse> orderList = new ArrayList<>();
     private DrawerLayout drawerLayout;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
