@@ -76,6 +76,8 @@ public class InfoActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(new Intent(this, UpdateUserActivity.class));
         } else if (id == R.id.nav_user_change_password) {
             startActivity(new Intent(this, ChangePasswordActivity.class));
+        } else if (id == R.id.nav_user_product) {
+            startActivity(new Intent(this, ProductListActivity.class));
         } else if (id == R.id.nav_user_store_location) {
             startActivity(new Intent(this, InfoActivity.class));
         } else if (id == R.id.nav_user_logout) {
