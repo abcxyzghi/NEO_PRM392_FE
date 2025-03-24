@@ -132,8 +132,8 @@ public class Login extends AppCompatActivity {
 
       @Override
       public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-       Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
-          Log.e("LOGIN_FAILED", response.message());
+        Toast.makeText(Login.this, "Try again! Something went wrong!!", Toast.LENGTH_SHORT).show();
+        Log.e("LOGIN_FAILED", t.getMessage()); // Thay response.message() bằng t.getMessage()
       }
     });
   }
