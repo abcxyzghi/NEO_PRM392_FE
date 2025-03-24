@@ -274,7 +274,7 @@ public class ProductListActivity extends AppCompatActivity implements Navigation
         if (id == R.id.nav_user_order_history) {
             startActivity(new Intent(this, OrderHistoryActivity.class));
         } else if (id == R.id.nav_user_update_profile) {
-            startActivity(new Intent(this, UpdateUserActivity.class));
+            startActivity(new Intent(this, ProfileActivity.class));
         } else if (id == R.id.nav_user_change_password) {
             startActivity(new Intent(this, ChangePasswordActivity.class));
         } else if (id == R.id.nav_user_store_location) {

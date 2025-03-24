@@ -60,19 +60,38 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateProfile() {
         String name = nameEditText.getText().toString().trim();
         String phone = phoneEditText.getText().toString().trim();
-        String gender = genderRadioGroup.getCheckedRadioButtonId() == R.id.maleRadioButton ? "MALE" : "FEMALE";
+        int selectedGenderId = genderRadioGroup.getCheckedRadioButtonId();
 
-        if (name.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+        // Kiểm tra tên (Không chứa số hoặc ký tự đặc biệt)
+        if (!name.matches("^[a-zA-ZÀ-Ỹà-ỹ\\s]+$")) {
+            nameEditText.setError("Tên không hợp lệ! Vui lòng nhập lại.");
+            nameEditText.requestFocus();
             return;
         }
 
+        // Kiểm tra số điện thoại (Phải có 10 chữ số và bắt đầu bằng số 0)
+        if (!phone.matches("^0[0-9]{9}$")) {
+            phoneEditText.setError("Số điện thoại không hợp lệ! Vui lòng nhập số gồm 10 chữ số.");
+            phoneEditText.requestFocus();
+            return;
+        }
+
+        // Kiểm tra giới tính đã chọn chưa
+        if (selectedGenderId == -1) {
+            Toast.makeText(this, "Vui lòng chọn giới tính!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String gender = (selectedGenderId == R.id.maleRadioButton) ? "MALE" : "FEMALE";
+
+        // Kiểm tra token
         String authToken = sharedPreferences.getString("auth_token", "");
-        if (authToken == null || authToken.isEmpty()) {
+        if (authToken.isEmpty()) {
             Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Thực hiện cập nhật API
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         UpdateProfileRequest request = new UpdateProfileRequest(name, phone, gender);
 
@@ -83,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Toast.makeText(ProfileActivity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
                     saveUserData(name, phone, gender);
                 } else {
-                    Toast.makeText(ProfileActivity.this, "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, "Cập nhật thất bại! Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -94,6 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void saveUserData(String name, String phone, String gender) {
         SharedPreferences.Editor editor = sharedPreferences.edit();

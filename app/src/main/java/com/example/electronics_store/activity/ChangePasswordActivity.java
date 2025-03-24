@@ -154,7 +154,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements Navigat
         if (id == R.id.nav_user_order_history) {
             startActivity(new Intent(this, OrderHistoryActivity.class));
         } else if (id == R.id.nav_user_update_profile) {
-            startActivity(new Intent(this, UpdateUserActivity.class));
+            startActivity(new Intent(this, ProfileActivity.class));
         } else if (id == R.id.nav_user_store_location) {
             startActivity(new Intent(this, InfoActivity.class));
         } else if (id == R.id.nav_user_product) {
