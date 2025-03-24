@@ -3,23 +3,28 @@
     <item
         android:id="@+id/nav_orders"
         android:title="Đơn Hàng"
+        android:icon="@drawable/ic_order_history"
         />
 
     <item
         android:id="@+id/nav_users"
         android:title="Người Dùng"
+        android:icon="@drawable/ic_user"
        />
 
     <item
         android:id="@+id/nav_products"
         android:title="Sản Phẩm"
+        android:icon="@drawable/ic_home"
       />
 
     <item
         android:id="@+id/nav_categories"
         android:title="Loại Hàng"
+        android:icon="@drawable/ic_categories"
        />
     <item
         android:id="@+id/nav_logout"
-        android:title="Đăng Xuất" />
+        android:title="Đăng Xuất"
+        android:icon="@drawable/ic_logout"/>
 </menu>
