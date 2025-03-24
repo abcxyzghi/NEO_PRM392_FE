@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.electronics_store.R;
+import com.example.electronics_store.adapter.FavoriteAdapter;
 import com.example.electronics_store.adapter.UserProductAdapter;
 import com.example.electronics_store.retrofit.FavoriteManager;
 import com.example.electronics_store.retrofit.ProductResponse;
@@ -34,6 +35,7 @@ public class FavoriteActivity extends AppCompatActivity {
         // Load danh sách yêu thích từ SharedPreferences thông qua FavoriteManager
         favoriteList = FavoriteManager.getFavorites(this);
 
+
         // Thiết lập sự kiện cho nút "Tiếp tục mua hàng"
         btnContinueShopping.setOnClickListener(v -> {
             Intent intent = new Intent(FavoriteActivity.this, ProductListActivity.class);
@@ -44,7 +46,9 @@ public class FavoriteActivity extends AppCompatActivity {
         if (favoriteList != null && !favoriteList.isEmpty()) {
             boolean isWishlistScreen = true;
             // Tạo adapter và thiết lập cho RecyclerView
-            adapter = new UserProductAdapter(this, favoriteList, isWishlistScreen);
+            FavoriteAdapter adapter = new FavoriteAdapter(favoriteList, this); // this = Activity context
+
+
             recyclerView.setAdapter(adapter);
         } else {
             // Nếu danh sách yêu thích rỗng, thông báo cho người dùng

@@ -8,13 +8,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.electronics_store.R;
 import com.example.electronics_store.retrofit.ProductResponse;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     public CartAdapter(List<ProductResponse> cartList, Context context, OnCartUpdateListener cartUpdateListener, OnQuantityChangeListener quantityChangeListener) {
-        this.cartList = new ArrayList<>(cartList); // Sao chép để tránh thay đổi ngoài ý muốn
+        this.cartList = new ArrayList<>(cartList);
         this.context = context;
         this.cartUpdateListener = cartUpdateListener;
         this.quantityChangeListener = quantityChangeListener;
@@ -60,16 +59,27 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
 
         // Xử lý xóa sản phẩm khỏi giỏ hàng
         holder.btnDelete.setOnClickListener(v -> {
-            if (cartUpdateListener != null) {
-                cartUpdateListener.onItemRemove(position);
-            }
+            new AlertDialog.Builder(context)
+                    .setTitle("Xác nhận xóa")
+                    .setMessage("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?")
+                    .setPositiveButton("Xóa", (dialog, which) -> {
+                        cartList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, cartList.size());
+
+                        if (cartUpdateListener != null) {
+                            cartUpdateListener.onItemRemove(position);
+                        }
+                    })
+                    .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss())
+                    .show();
         });
 
         // Xử lý tăng số lượng
         holder.btnIncrease.setOnClickListener(v -> {
             int newQuantity = product.getQuantity() + 1;
             product.setQuantity(newQuantity);
-            notifyItemChanged(position); // Cập nhật UI ngay lập tức
+            notifyItemChanged(position);
             if (quantityChangeListener != null) {
                 quantityChangeListener.onQuantityChange(position, newQuantity);
             }
@@ -80,7 +90,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             if (product.getQuantity() > 1) {
                 int newQuantity = product.getQuantity() - 1;
                 product.setQuantity(newQuantity);
-                notifyItemChanged(position); // Cập nhật UI ngay lập tức
+                notifyItemChanged(position);
                 if (quantityChangeListener != null) {
                     quantityChangeListener.onQuantityChange(position, newQuantity);
                 }
@@ -93,7 +103,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         return cartList.size();
     }
 
-    // Cập nhật danh sách sản phẩm bằng DiffUtil để tăng hiệu suất
     public void updateData(List<ProductResponse> newCartList) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
@@ -120,9 +129,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         cartList.clear();
         cartList.addAll(newCartList);
         diffResult.dispatchUpdatesTo(this);
-
-        // Nếu vẫn lag, ép RecyclerView cập nhật lại toàn bộ
-        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -141,5 +147,4 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
             btnDecrease = itemView.findViewById(R.id.btn_decrease);
         }
     }
-
 }

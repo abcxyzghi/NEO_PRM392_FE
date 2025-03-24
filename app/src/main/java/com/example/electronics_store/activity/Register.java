@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,6 +44,13 @@ public class Register extends AppCompatActivity {
         Button btnFemale = findViewById(R.id.btnFemale);
         Button btnOther = findViewById(R.id.btnOther);
 
+        TextView signin_textview = findViewById(R.id.signin_textview);
+
+        signin_textview.setOnClickListener(v -> {
+            Intent intent = new Intent(Register.this, Login.class);
+            startActivity(intent);
+        });
+
         btnMale.setOnClickListener(v -> {
             selectedGender = "MALE";
             updateGenderButtonStyles(btnMale, btnFemale, btnOther);
@@ -59,6 +67,8 @@ public class Register extends AppCompatActivity {
         });
 
         registerBtn.setOnClickListener(v -> registerUser(yourName, emailAddress, phone, password, confirmPassword));
+
+
     }
 
     private void registerUser(EditText yourName, EditText emailAddress, EditText phone, EditText password, EditText confirmPassword) {
@@ -118,12 +128,12 @@ public class Register extends AppCompatActivity {
     }
 
     private void updateGenderButtonStyles(Button selectedButton, Button... otherButtons) {
-        selectedButton.setBackgroundTintList(getColorStateList(R.color.green));
-        selectedButton.setTextColor(getColor(R.color.white));
+        selectedButton.setBackgroundTintList(getColorStateList(R.color.white));
+        selectedButton.setTextColor(getColor(R.color.red));
 
         for (Button btn : otherButtons) {
-            btn.setBackgroundTintList(getColorStateList(R.color.white));
-            btn.setTextColor(getColor(R.color.green));
+            btn.setBackgroundTintList(getColorStateList(R.color.red));
+            btn.setTextColor(getColor(R.color.white));
         }
     }
 
@@ -136,4 +146,5 @@ public class Register extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(Register.this, message, Toast.LENGTH_SHORT).show();
     }
+
 }

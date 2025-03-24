@@ -1,6 +1,8 @@
 package com.example.electronics_store.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,16 +42,28 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         holder.txtProductName.setText(product.getName());
         holder.txtProductPrice.setText(String.format("%.0fđ", product.getPrice()));
 
-        // Load ảnh sản phẩm với Glide (hoặc Picasso)
+        // Load ảnh sản phẩm với Glide
         Glide.with(context).load(product.getImageUrl()).into(holder.imgProduct);
 
-        // Xử lý sự kiện nút Xóa
+        // Xử lý sự kiện nút Xóa với hộp thoại xác nhận
         holder.btnRemoveFavorite.setOnClickListener(v -> {
-            FavoriteManager.removeFavorite(context, product.getId());
-            favoriteList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, favoriteList.size());
-            Toast.makeText(context, "Đã xóa khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
+            // Kiểm tra nếu context có phải là Activity không
+            if (context instanceof android.app.Activity) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Xác nhận xóa")
+                        .setMessage("Bạn có chắc muốn xóa sản phẩm này khỏi danh sách yêu thích?")
+                        .setPositiveButton("Xóa", (dialog, which) -> {
+                            FavoriteManager.removeFavorite(context, product.getId());
+                            favoriteList.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, favoriteList.size());
+                            Toast.makeText(context, "Đã xóa khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss())
+                        .show();
+            } else {
+                Toast.makeText(context, "Lỗi: Không thể hiển thị hộp thoại", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

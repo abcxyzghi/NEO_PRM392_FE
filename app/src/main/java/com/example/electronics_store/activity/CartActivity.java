@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +28,7 @@ public class CartActivity extends AppCompatActivity {
     private Button btnContinueShopping, continueButton;
     private List<ProductResponse> cartList = new ArrayList<>();
     private CartAdapter cartAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +95,7 @@ public class CartActivity extends AppCompatActivity {
     private void removeItemFromCart(int position) {
         if (position < 0 || position >= cartList.size()) return;
 
-        List<ProductResponse> newCartList = new ArrayList<>(cartList); // Tạo danh sách mới
+        List<ProductResponse> newCartList = new ArrayList<>(cartList);
         ProductResponse product = newCartList.get(position);
 
         if (product.getQuantity() > 1) {
@@ -105,13 +103,19 @@ public class CartActivity extends AppCompatActivity {
             cartAdapter.notifyItemChanged(position);
         } else {
             newCartList.remove(position);
-            cartAdapter.updateData(newCartList); // Cập nhật danh sách bằng DiffUtil
         }
 
-        // Lưu dữ liệu & cập nhật giá tiền
         CartUtils.saveCartList(this, newCartList);
+        cartAdapter.updateData(newCartList);
+
+        // Cập nhật danh sách giỏ hàng
+        cartList.clear();
+        cartList.addAll(newCartList);
+
+        // Gọi updateTotalPrice() để cập nhật giao diện
         updateTotalPrice();
     }
+
 
     private void updateItemQuantity(int position, int newQuantity) {
         if (position < 0 || position >= cartList.size() || newQuantity < 1) return;
@@ -127,8 +131,15 @@ public class CartActivity extends AppCompatActivity {
         for (ProductResponse product : cartList) {
             total += product.getPrice() * product.getQuantity();
         }
-        totalPriceText.setText(String.format("%.0fđ", total));
+
+        // Kiểm tra nếu giỏ hàng trống thì hiển thị 0đ
+        if (cartList.isEmpty()) {
+            totalPriceText.setText("0đ");
+        } else {
+            totalPriceText.setText(String.format("%.0fđ", total));
+        }
     }
+
 
     public static void clearCart(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("CartPrefs", Context.MODE_PRIVATE);

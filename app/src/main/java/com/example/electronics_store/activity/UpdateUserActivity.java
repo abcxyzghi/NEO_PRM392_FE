@@ -8,15 +8,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +33,7 @@ public class UpdateUserActivity extends AppCompatActivity implements NavigationV
     private int userId;
     private String avatarUrl;
     private DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +44,6 @@ public class UpdateUserActivity extends AppCompatActivity implements NavigationV
         getSupportActionBar().setTitle("Cập nhật thông tin");
 
         drawerLayout = findViewById(R.id.up_drawer_layout);
-
         NavigationView navigationView = findViewById(R.id.up_navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -73,6 +69,7 @@ public class UpdateUserActivity extends AppCompatActivity implements NavigationV
             etAvatarUrl.setText(avatarUrl);
             Glide.with(this).load(avatarUrl).placeholder(R.drawable.ic_avatar).into(ivAvatar);
         }
+
         etAvatarUrl.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 String newAvatarUrl = etAvatarUrl.getText().toString().trim();
@@ -81,6 +78,7 @@ public class UpdateUserActivity extends AppCompatActivity implements NavigationV
                 }
             }
         });
+
         btnSave.setOnClickListener(v -> updateUser());
     }
 
@@ -89,11 +87,28 @@ public class UpdateUserActivity extends AppCompatActivity implements NavigationV
         String phone = etPhoneNumber.getText().toString().trim();
         String newAvatarUrl = etAvatarUrl.getText().toString().trim();
 
-        if (userId == -1 || name.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+        // Kiểm tra tên người dùng (Không được trống, ít nhất 3 ký tự)
+        if (name.isEmpty() || name.length() < 3) {
+            etUserName.setError("Tên phải có ít nhất 3 ký tự");
+            etUserName.requestFocus();
             return;
         }
 
+        // Kiểm tra số điện thoại (Chỉ chứa số, phải có đúng 10 chữ số)
+        if (!phone.matches("\\d{10}")) {
+            etPhoneNumber.setError("Số điện thoại không hợp lệ (10 số)");
+            etPhoneNumber.requestFocus();
+            return;
+        }
+
+        // Kiểm tra URL avatar nếu có nhập
+        if (!newAvatarUrl.isEmpty() && !android.util.Patterns.WEB_URL.matcher(newAvatarUrl).matches()) {
+            etAvatarUrl.setError("URL avatar không hợp lệ");
+            etAvatarUrl.requestFocus();
+            return;
+        }
+
+        // Nếu vượt qua validation, tiến hành cập nhật
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         UserUpdateRequest request = new UserUpdateRequest(name, phone, newAvatarUrl);
 
@@ -130,7 +145,7 @@ public class UpdateUserActivity extends AppCompatActivity implements NavigationV
         } else if (id == R.id.nav_user_product) {
             startActivity(new Intent(this, ProductListActivity.class));
         } else if (id == R.id.nav_user_logout) {
-            logout(); // Đóng ứng dụng hoặc xử lý đăng xuất
+            logout();
         }
 
         drawerLayout.closeDrawer(GravityCompat.START);

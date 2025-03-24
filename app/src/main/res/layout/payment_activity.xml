@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg2"
     tools:context=".activity.PaymentActivity">
 
     <ScrollView
@@ -16,11 +17,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Header Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#f0fdf4"
                 android:orientation="horizontal"
                 android:padding="5dp"
                 android:gravity="center_vertical">
@@ -28,13 +27,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Check out"
-                    android:textColor="#0bae77"
+                    android:text="Check Out"
+                    android:textStyle="bold"
+                    android:textColor="#F01303"
                     android:textSize="30sp"
                     android:layout_marginStart="20dp"/>
             </LinearLayout>
 
-            <!-- Customer Information Section -->
             <TextView
                 android:id="@+id/customerInfoTitle"
                 android:layout_width="wrap_content"
@@ -43,9 +42,8 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
-                android:textColor="#000000"/>
+                android:textColor="#FFFFFF"/>
 
-            <!-- Full Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -59,7 +57,7 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:textColor="#FFFFFF"/>
 
                 <EditText
                     android:id="@+id/fullName"
@@ -70,13 +68,9 @@
                     android:textSize="16sp"
                     android:background="@drawable/custom_search_bar"
                     android:padding="10dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#000000"/>
+                    android:textColorHint="#FFFFFF"/>
             </LinearLayout>
 
-
-
-            <!-- Phone Number -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,7 +84,7 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:textColor="#FFFFFF"/>
 
                 <EditText
                     android:id="@+id/phoneNumber"
@@ -101,11 +95,9 @@
                     android:textSize="16sp"
                     android:background="@drawable/custom_search_bar"
                     android:padding="10dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#000000"/>
+                    android:textColorHint="#FFFFFF"/>
             </LinearLayout>
 
-            <!-- Email -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,7 +111,7 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
-                    android:textColor="#000000"/>
+                    android:textColor="#FFFFFF"/>
 
                 <EditText
                     android:id="@+id/email"
@@ -131,12 +123,9 @@
                     android:textSize="16sp"
                     android:background="@drawable/custom_search_bar"
                     android:padding="10dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#000000"/>
+                    android:textColorHint="#FFFFFF"/>
             </LinearLayout>
 
-
-            <!-- Address -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,8 +139,7 @@
                     android:textSize="16sp"
                     android:layout_marginEnd="8dp"
                     android:layout_gravity="center_vertical"
-                    android:textColor="#000000"
-                    android:textColorHint="#000000"/>
+                    android:textColor="#FFFFFF"/>
 
                 <EditText
                     android:id="@+id/address"
@@ -162,11 +150,9 @@
                     android:textSize="16sp"
                     android:background="@drawable/custom_search_bar"
                     android:padding="10dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#000000"/>
+                    android:textColorHint="#FFFFFF"/>
             </LinearLayout>
 
-            <!-- Cart Items Section -->
             <TextView
                 android:id="@+id/cartListTitle"
                 android:layout_width="wrap_content"
@@ -175,7 +161,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:layout_marginTop="24dp"
-                android:textColor="#000000"/>
+                android:textColor="#FFFFFF"/>
 
             <ListView
                 android:id="@+id/cartItemListView"
@@ -185,7 +171,6 @@
                 android:background="@drawable/custom_search_bar"
                 android:layout_weight="1"/>
 
-            <!-- Total Price Section -->
             <TextView
                 android:id="@+id/totalPrice"
                 android:layout_width="wrap_content"
@@ -193,9 +178,8 @@
                 android:text="Total Price: "
                 android:textSize="16sp"
                 android:layout_marginTop="16dp"
-                android:textColor="#000000"/>
+                android:textColor="#FFFFFF"/>
 
-            <!-- Payment Method Section -->
             <TextView
                 android:id="@+id/paymentMethodTitle"
                 android:layout_width="wrap_content"
@@ -204,9 +188,8 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
-                android:textColor="#000000"/>
+                android:textColor="#FFFFFF"/>
 
-            <!-- Nhóm lựa chọn phương thức thanh toán -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -222,40 +205,35 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- ZaloPay -->
                     <RadioButton
                         android:id="@+id/payment_zalopay"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thanh toán qua ZaloPay"
                         android:textSize="16sp"
-                        android:textColor="@color/black"
-                        android:buttonTint="@color/teal_700"
+                        android:textColor="#000000"
+                        android:buttonTint="@color/red"
                         android:paddingVertical="12dp" />
 
-
-                    <!-- Tiền mặt -->
                     <RadioButton
                         android:id="@+id/payment_cash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thanh toán tiền mặt khi nhận hàng"
                         android:textSize="16sp"
-                        android:textColor="@color/black"
-                        android:buttonTint="@color/teal_700"
+                        android:textColor="#000000"
+                        android:buttonTint="@color/red"
                         android:paddingVertical="12dp" />
                 </RadioGroup>
             </androidx.cardview.widget.CardView>
 
-
-            <!-- Nút đặt hàng -->
             <Button
                 android:id="@+id/orderButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Đặt hàng"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="@color/teal_700"
+                android:backgroundTint="@color/red"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:paddingVertical="14dp"
@@ -264,5 +242,4 @@
                 android:theme="@style/Widget.AppCompat.Button"/>
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>

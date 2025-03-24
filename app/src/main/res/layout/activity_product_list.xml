@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/user_drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/home1">
+
     <!-- Layout chứa nội dung chính -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,43 +17,45 @@
             android:id="@+id/user_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title="Danh sách sản phẩm" />
+            android:background="#80000000"
+            app:title="E-Commerce"
+            android:textSize="60sp"
+            app:titleTextColor="#FD1503"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#EDEDED"
+            android:background="#80000000"
             android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="24dp">
 
                 <!-- Banner quảng cáo -->
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/bannerViewPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_width="363dp"
+                    android:layout_height="137dp"
                     android:layout_marginBottom="16dp"
+                    android:backgroundTint="#80FFFFFF"
                     android:clipChildren="false"
                     android:clipToPadding="false"
                     android:overScrollMode="never"
                     android:paddingStart="16dp"
-                    android:paddingEnd="16dp" /> <!-- Khoảng cách phía dưới -->
+                    android:paddingEnd="16dp" />
 
                 <!-- Thanh tìm kiếm -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTint="#80FFFFFF"
                     app:cardCornerRadius="12dp"
-                    app:cardElevation="6dp"> <!-- Khoảng cách phía trên -->
+                    app:cardElevation="6dp">
 
                     <androidx.appcompat.widget.SearchView
                         android:id="@+id/searchView"
@@ -59,9 +63,11 @@
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
                         android:iconifiedByDefault="false"
-                        android:queryHint="Tìm kiếm sản phẩm..." />
+                        android:queryHint="Tìm kiếm sản phẩm..."
+                        android:textColorHint="#B0B0B0"
+                    app:searchIcon="@drawable/search"
+                    app:iconTint="#FFFFFF" />
                 </androidx.cardview.widget.CardView>
-
 
                 <!-- Thanh icon Giỏ hàng và Yêu thích -->
                 <LinearLayout
@@ -78,7 +84,7 @@
                         android:background="@null"
                         android:contentDescription="Thông báo chung"
                         android:src="@drawable/notifications"
-                        app:tint="#000000" />
+                        app:tint="#F40505" />
 
                     <ImageButton
                         android:id="@+id/btnFavorite"
@@ -87,7 +93,7 @@
                         android:background="@null"
                         android:contentDescription="Yêu thích"
                         android:src="@drawable/favorite_like"
-                        app:tint="#000000" />
+                        app:tint="#F40505" />
 
                     <ImageButton
                         android:id="@+id/btnCart"
@@ -96,7 +102,7 @@
                         android:background="@null"
                         android:contentDescription="Giỏ hàng"
                         android:src="@drawable/cart"
-                        app:tint="#000000" />
+                        app:tint="#F40505" />
                 </LinearLayout>
 
                 <!-- Bộ lọc -->
@@ -104,7 +110,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTint="#80FFFFFF"
                     android:padding="12dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="6dp">
@@ -118,13 +124,17 @@
                             android:id="@+id/spinnerCategory"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#80FFFFFF" />
 
                         <Spinner
                             android:id="@+id/spinnerSort"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#80FFFFFF" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -133,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTint="#80FFFFFF"
                     android:padding="12dp"
                     app:cardCornerRadius="12dp"
                     app:cardElevation="6dp">
@@ -149,8 +159,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:hint="Giá tối thiểu"
+                            android:textColorHint="#000000"
                             android:inputType="numberDecimal"
-                            android:textColor="#000000" />
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp" />
 
                         <EditText
                             android:id="@+id/maxPrice"
@@ -158,9 +170,10 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:hint="Giá tối đa"
+                            android:textColorHint="#000000"
                             android:inputType="numberDecimal"
-                            android:textColor="#000000" />
-
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -170,10 +183,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:backgroundTint="#6200EE"
+                    android:background="@drawable/ban_background"
                     android:text="Áp dụng"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp" />
+                    android:textSize="18sp"
+                    android:textAllCaps="false" />
 
                 <!-- Danh sách sản phẩm -->
                 <TextView
@@ -181,8 +195,8 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="24dp"
                     android:text="Danh sách sản phẩm"
-                    android:textColor="#000000"
-                    android:textSize="18sp"
+                    android:textColor="#FD1503"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -190,7 +204,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:background="#FFFFFF"
+                    android:background="#80FFFFFF"
                     android:padding="8dp"
                     app:spanCount="2" />
 
@@ -204,6 +218,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#80000000"
+        app:itemTextColor="#FFFFFF"
+        app:itemIconTint="#FFFFFF"
         app:menu="@menu/user_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

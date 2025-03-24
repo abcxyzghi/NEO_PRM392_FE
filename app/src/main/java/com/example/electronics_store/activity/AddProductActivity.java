@@ -34,6 +34,7 @@ public class AddProductActivity extends AppCompatActivity {
     private ApiService apiService;
     private List<CategoryResponse> categoryList = new ArrayList<>();
     private int selectedCategoryId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,17 +95,57 @@ public class AddProductActivity extends AppCompatActivity {
     }
 
     private void submitProduct() {
-        String name = etName.getText().toString();
-        String description = etDescription.getText().toString();
-        double price = Double.parseDouble(etPrice.getText().toString());
-        int stock = Integer.parseInt(etStock.getText().toString());
-        String imageUrl = etImageUrl.getText().toString();
+        String name = etName.getText().toString().trim();
+        String description = etDescription.getText().toString().trim();
+        String priceStr = etPrice.getText().toString().trim();
+        String stockStr = etStock.getText().toString().trim();
+        String imageUrl = etImageUrl.getText().toString().trim();
 
+        // Kiểm tra các trường không được để trống
+        if (name.isEmpty() || description.isEmpty() || priceStr.isEmpty() || stockStr.isEmpty() || imageUrl.isEmpty()) {
+            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra định dạng giá
+        double price;
+        try {
+            price = Double.parseDouble(priceStr);
+            if (price <= 0) {
+                Toast.makeText(this, "Giá sản phẩm phải lớn hơn 0!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Giá sản phẩm không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra số lượng sản phẩm
+        int stock;
+        try {
+            stock = Integer.parseInt(stockStr);
+            if (stock < 0) {
+                Toast.makeText(this, "Số lượng sản phẩm phải là số nguyên không âm!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Số lượng sản phẩm không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Kiểm tra danh mục đã chọn
         if (selectedCategoryId == -1) {
             Toast.makeText(this, "Vui lòng chọn danh mục!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Kiểm tra định dạng URL
+        if (!android.util.Patterns.WEB_URL.matcher(imageUrl).matches()) {
+            Toast.makeText(this, "URL hình ảnh không hợp lệ!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tạo đối tượng sản phẩm và gửi request
         ProductRequest product = new ProductRequest(name, description, price, stock, selectedCategoryId, imageUrl);
         Call<Void> call = apiService.addProduct(product);
 

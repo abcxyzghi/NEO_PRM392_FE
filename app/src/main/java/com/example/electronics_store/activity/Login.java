@@ -20,13 +20,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.*;
-import com.google.firebase.database.annotations.NotNull;
 
 import org.json.JSONObject;
 
@@ -54,8 +55,11 @@ public class Login extends AppCompatActivity {
     mAuth = FirebaseAuth.getInstance();
 
     String savedToken = getSharedPreferences("AppPrefs", MODE_PRIVATE).getString("auth_token", null);
+    Log.d("AUTH_TOKEN", "Saved token: " + savedToken);
     if (savedToken != null) {
       RetrofitClient.setAuthToken(savedToken);
+    } else {
+      Log.w("AUTH_TOKEN", "No token found");
     }
 
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -78,35 +82,13 @@ public class Login extends AppCompatActivity {
     });
 
     loginBtn.setOnClickListener(v -> {
-      final String emailTxt = email.getText().toString();
-      final String passwordTxt = password.getText().toString();
+      final String emailTxt = email.getText().toString().trim().toLowerCase();
+      final String passwordTxt = password.getText().toString().trim();
       if (emailTxt.isEmpty() || passwordTxt.isEmpty()) {
         Toast.makeText(Login.this, "Please enter both your email and password!!", Toast.LENGTH_SHORT).show();
       } else {
+        clearAuthToken(); // Xóa token cũ trước khi đăng nhập
         loginWithApi(emailTxt, passwordTxt);
-//        String emailKey = emailTxt.replace(".", ",");
-//        databaseReference.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-//          @Override
-//          public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-//            if (snapshot.hasChild(emailKey)) {
-//              final String getPassword = snapshot.child(emailKey).child("password").getValue(String.class);
-//              String role = snapshot.child(emailKey).child("role").getValue(String.class);
-//              if (getPassword != null && getPassword.equals(passwordTxt)) {
-//                Toast.makeText(Login.this, "Login successfully!!", Toast.LENGTH_SHORT).show();
-//                redirectBasedOnRole(role);
-//              } else {
-//                Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
-//              }
-//            } else {
-//              Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
-//            }
-//          }
-//
-//          @Override
-//          public void onCancelled(@NonNull DatabaseError error) {
-//            Toast.makeText(Login.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-//          }
-//        });
       }
     });
 
@@ -116,6 +98,7 @@ public class Login extends AppCompatActivity {
 
   private void loginWithApi(String email, String password) {
     LoginRequest loginRequest = new LoginRequest(email, password);
+    Log.d("API_REQUEST", "Email: " + email + ", Password: " + password);
 
     ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
     Call<LoginResponse> call = apiService.loginUser(loginRequest);
@@ -134,18 +117,26 @@ public class Login extends AppCompatActivity {
           redirectBasedOnRole(role);
           Toast.makeText(Login.this, "Login successfully!!", Toast.LENGTH_SHORT).show();
         } else {
-          Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
-          Log.e("LOGIN_FAILED", response.message());
+          String errorMessage = "Try again! Wrong email or password!!";
+          try {
+            if (response.errorBody() != null) {
+              errorMessage = response.errorBody().string();
+            }
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+          Toast.makeText(Login.this, "Login failed: " + errorMessage, Toast.LENGTH_LONG).show();
+          Log.e("LOGIN_FAILED", "Code: " + response.code() + ", Message: " + errorMessage);
         }
       }
 
       @Override
       public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-        Toast.makeText(Login.this, "API Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(Login.this, "API Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+        Log.e("LOGIN_FAILED", "Failure: " + t.getMessage());
       }
     });
   }
-
 
   private void redirectBasedOnRole(String role) {
     Intent intent;
@@ -158,7 +149,13 @@ public class Login extends AppCompatActivity {
     startActivity(intent);
     finish();
   }
+
   private void signInWithGoogle() {
+    int resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+    if (resultCode != ConnectionResult.SUCCESS) {
+      Toast.makeText(this, "Google Play Services không khả dụng", Toast.LENGTH_LONG).show();
+      return;
+    }
     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
     startActivityForResult(signInIntent, RC_SIGN_IN);
   }
@@ -174,7 +171,7 @@ public class Login extends AppCompatActivity {
         firebaseAuthWithGoogle(account.getIdToken());
       } catch (ApiException e) {
         Log.w("Google Sign-In", "Google sign-in failed", e);
-        Toast.makeText(this, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Google sign-in failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
       }
     }
   }
@@ -191,7 +188,7 @@ public class Login extends AppCompatActivity {
                 finish();
               } else {
                 Log.w("Google Sign-In", "signInWithCredential:failure", task.getException());
-                Toast.makeText(this, "Authentication failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Authentication failed: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_LONG).show();
               }
             });
   }
@@ -203,24 +200,32 @@ public class Login extends AppCompatActivity {
             .apply();
   }
 
+  private void clearAuthToken() {
+    getSharedPreferences("AppPrefs", MODE_PRIVATE)
+            .edit()
+            .remove("auth_token")
+            .apply();
+    RetrofitClient.setAuthToken(null);
+  }
+
   private String decodeJwtRole(String token) {
     try {
       String[] parts = token.split("\\.");
       if (parts.length != 3) {
+        Log.e("JWT_ERROR", "Invalid token format");
         return "USER";
       }
 
-      // Giải mã phần payload (Base64 URL-Safe)
       byte[] decodedBytes = Base64.decode(parts[1], Base64.URL_SAFE);
       String payload = new String(decodedBytes, StandardCharsets.UTF_8);
 
-      // Chuyển payload thành JSON và lấy role
       JSONObject jsonObject = new JSONObject(payload);
-      return jsonObject.optString("role", "USER");
+      String role = jsonObject.optString("role", "USER");
+      Log.d("JWT_ROLE", "Decoded role: " + role);
+      return role;
     } catch (Exception e) {
-      e.printStackTrace();
+      Log.e("JWT_ERROR", "Error decoding JWT: " + e.getMessage());
       return "USER";
     }
   }
-
 }

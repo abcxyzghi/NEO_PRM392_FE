@@ -69,37 +69,47 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         builder.setView(dialogView);
         builder.setPositiveButton("Lưu", (dialog, which) -> {
             String updatedName = etCategoryName.getText().toString().trim();
-            if (!updatedName.isEmpty()) {
-                CategoryRequest categoryRequest = new CategoryRequest(updatedName);
 
-                Call<Void> call = apiService.updateCategory(category.getId(), categoryRequest);
-                call.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            category.setName(updatedName);
-                            categoryList.set(position, category);
-                            notifyItemChanged(position);
-                            Toast.makeText(context, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(context, "Lỗi khi cập nhật danh mục!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                        Toast.makeText(context, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
+            // Validation
+            if (updatedName.isEmpty()) {
                 Toast.makeText(context, "Tên danh mục không được để trống!", Toast.LENGTH_SHORT).show();
+                return;
             }
+            if (updatedName.length() < 3) {
+                Toast.makeText(context, "Tên danh mục phải có ít nhất 3 ký tự!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (updatedName.equals(category.getName())) {
+                Toast.makeText(context, "Tên danh mục không thay đổi!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            CategoryRequest categoryRequest = new CategoryRequest(updatedName);
+            Call<Void> call = apiService.updateCategory(category.getId(), categoryRequest);
+
+            call.enqueue(new Callback<Void>() {
+                @Override
+                public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                    if (response.isSuccessful()) {
+                        category.setName(updatedName);
+                        categoryList.set(position, category);
+                        notifyItemChanged(position);
+                        Toast.makeText(context, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, "Lỗi khi cập nhật danh mục!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                    Toast.makeText(context, "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
 
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
-
 
     private void deleteCategory(int categoryId, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

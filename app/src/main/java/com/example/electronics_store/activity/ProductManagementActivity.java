@@ -95,8 +95,13 @@ public class ProductManagementActivity extends AppCompatActivity implements Navi
             }
         }
 
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy sản phẩm nào", Toast.LENGTH_SHORT).show();
+        }
+
         productAdapter.setProductList(filteredList);
     }
+
 
 
     private void fetchProducts() {

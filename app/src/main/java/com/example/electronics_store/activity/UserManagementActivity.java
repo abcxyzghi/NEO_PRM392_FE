@@ -65,7 +65,7 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Danh Sách Người Dùng");
         reloadBtn = findViewById(R.id.btnReloadUser);
-        reloadBtn.setOnClickListener(v-> {
+        reloadBtn.setOnClickListener(v -> {
             Toast.makeText(UserManagementActivity.this, "Đang tải lại danh sách...", Toast.LENGTH_SHORT).show();
             fetchUsers();
         });
@@ -92,6 +92,7 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
 
         fetchUsers();
     }
+
     private void fetchUsers() {
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<UserResponse>> call = apiService.getAllUsers();
@@ -152,7 +153,9 @@ public class UserManagementActivity extends AppCompatActivity implements Navigat
                 filteredList.add(user);
             }
         }
+        if (filteredList.isEmpty()) {
+            Toast.makeText(this, "Không tìm thấy người dùng với số điện thoại này", Toast.LENGTH_SHORT).show();
+        }
         userAdapter.setUserList(filteredList);
     }
-
 }

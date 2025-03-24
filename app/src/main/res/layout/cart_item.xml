@@ -17,15 +17,18 @@
         android:contentDescription="Product Image" />
 
     <!-- Product Info and Delete Button -->
+
+    <!-- Divider -->
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_width="310dp"
+        android:layout_height="83dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@id/image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- Title and Delete Button -->
         <LinearLayout
@@ -38,46 +41,47 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="14sp"
                 android:textColor="@color/black"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/btnDelete"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/delete"
                 android:layout_marginEnd="10dp"
-                android:contentDescription="Delete item"/>
+                android:contentDescription="Delete item"
+                android:src="@drawable/delete"
+                app:tint="#000000" />
         </LinearLayout>
 
         <!-- Count and Price -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="10dp"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <!-- Nút giảm số lượng -->
             <Button
                 android:id="@+id/btn_decrease"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:text="-"
+                android:layout_marginEnd="10dp"
                 android:backgroundTint="@color/white"
-                android:textSize="18sp"
+                android:text=" - "
                 android:textColor="@color/black"
-                android:layout_marginEnd="10dp"/>
+                android:textSize="18sp" />
 
             <!-- Số lượng sản phẩm -->
             <TextView
                 android:id="@+id/count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/black"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textStyle="bold" />
 
 
             <!-- Nút tăng số lượng -->
@@ -85,26 +89,25 @@
                 android:id="@+id/btn_increase"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:text="+"
+                android:layout_marginStart="10dp"
                 android:backgroundTint="@color/white"
-                android:textSize="18sp"
+                android:text="+"
                 android:textColor="@color/black"
-                android:layout_marginStart="10dp"/>
+                android:textSize="18sp" />
 
             <!-- Giá sản phẩm -->
             <TextView
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:textColor="@color/black"
-                android:textStyle="bold"
                 android:textSize="16sp"
-                android:layout_marginStart="20dp" />
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

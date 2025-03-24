@@ -245,9 +245,17 @@ public class ProductListActivity extends AppCompatActivity implements Navigation
                     @Override
                     public void onResponse(Call<List<ProductResponse>> call, Response<List<ProductResponse>> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            userProductAdapter = new UserProductAdapter(ProductListActivity.this, response.body(), false);
-                            recyclerView.setLayoutManager(new GridLayoutManager(ProductListActivity.this, 2)); // Lưới 2 cột
-                            recyclerView.setAdapter(userProductAdapter);
+                            List<ProductResponse> products = response.body();
+                            if (products.isEmpty()) {
+                                Toast.makeText(ProductListActivity.this, "Không tìm thấy sản phẩm nào!", Toast.LENGTH_SHORT).show();
+                                recyclerView.setAdapter(null); // Xóa danh sách hiển thị cũ
+                            } else {
+                                userProductAdapter = new UserProductAdapter(ProductListActivity.this, products, false);
+                                recyclerView.setLayoutManager(new GridLayoutManager(ProductListActivity.this, 2)); // Lưới 2 cột
+                                recyclerView.setAdapter(userProductAdapter);
+                            }
+                        } else {
+                            Toast.makeText(ProductListActivity.this, "Lỗi khi tải sản phẩm!", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -257,6 +265,7 @@ public class ProductListActivity extends AppCompatActivity implements Navigation
                     }
                 });
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
