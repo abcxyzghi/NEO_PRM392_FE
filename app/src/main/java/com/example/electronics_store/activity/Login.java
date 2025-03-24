@@ -125,15 +125,15 @@ public class Login extends AppCompatActivity {
           } catch (Exception e) {
             e.printStackTrace();
           }
-          Toast.makeText(Login.this, "Login failed: " + errorMessage, Toast.LENGTH_LONG).show();
-          Log.e("LOGIN_FAILED", "Code: " + response.code() + ", Message: " + errorMessage);
+          Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
+          Log.e("LOGIN_FAILED", response.message());
         }
       }
 
       @Override
       public void onFailure(@NonNull Call<LoginResponse> call, @NonNull Throwable t) {
-        Toast.makeText(Login.this, "API Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
-        Log.e("LOGIN_FAILED", "Failure: " + t.getMessage());
+       Toast.makeText(Login.this, "Try again! Wrong email or password!!", Toast.LENGTH_SHORT).show();
+          Log.e("LOGIN_FAILED", response.message());
       }
     });
   }
