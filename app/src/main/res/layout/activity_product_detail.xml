@@ -13,87 +13,87 @@
             android:id="@+id/productImage"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitCenter" />
 
         <TextView
             android:id="@+id/productName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="8dp"
             android:textSize="22sp"
-            android:textStyle="bold"
-            android:paddingTop="8dp" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/productPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:paddingTop="4dp"
             android:textColor="@android:color/holo_red_dark"
-            android:paddingTop="4dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/productDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:paddingTop="8dp" />
+            android:paddingTop="8dp"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/btnAddToCart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thêm vào giỏ hàng"
+            android:layout_marginTop="12dp"
             android:backgroundTint="@android:color/holo_blue_dark"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="12dp" />
+            android:text="Thêm vào giỏ hàng"
+            android:textColor="@android:color/white" />
 
         <!-- Phần đánh giá -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="16dp"
             android:text="Đánh giá sản phẩm"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
+            android:textStyle="bold" />
 
         <RatingBar
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:numStars="5"
-            android:stepSize="1.0"
-            android:layout_marginTop="8dp" />
+            android:stepSize="1.0" />
 
         <EditText
             android:id="@+id/edtReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập đánh giá của bạn"
-            android:background="@android:drawable/edit_text"
-            android:padding="10dp"
             android:layout_marginTop="8dp"
+            android:background="@android:drawable/edit_text"
+            android:hint="Nhập đánh giá của bạn"
+            android:padding="10dp"
             android:textColor="#000000"
-        android:textColorHint="#808080"
-        android:textSize="16sp" />
+            android:textColorHint="#808080"
+            android:textSize="16sp" />
 
 
         <Button
             android:id="@+id/btnSubmitReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Gửi đánh giá"
+            android:layout_marginTop="8dp"
             android:backgroundTint="@android:color/holo_green_dark"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="8dp" />
+            android:text="Gửi đánh giá"
+            android:textColor="@android:color/white" />
 
         <!-- Danh sách hiển thị đánh giá -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="16dp"
             android:text="Danh sách đánh giá"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:paddingTop="16dp" />
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewReviews"

@@ -59,7 +59,7 @@
             android:id="@+id/ivProduct"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:contentDescription="Product Image" />
 
         <Button
